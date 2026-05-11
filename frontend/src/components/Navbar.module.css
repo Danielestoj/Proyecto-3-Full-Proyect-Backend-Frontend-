@@ -1,0 +1,49 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 64px;
+  background: #1b4332;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.brand { font-size: 1.3rem; font-weight: 700; color: white; text-decoration: none; }
+
+.links { display: flex; gap: 1rem; align-items: center; }
+
+.links a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.links a:hover { color: white; }
+
+.btnPrimary { background: #52b788; color: white !important; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 600; }
+
+.roleTag {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.btnLogout {
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.btnLogout:hover { background: rgba(255,255,255,0.1); color: white; }
+
+@media (max-width: 600px) {
+  .nav { padding: 0 1rem; }
+  .links { gap: 0.4rem; }
+  .links a { font-size: 0.82rem; }
+}
