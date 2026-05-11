@@ -1,4 +1,4 @@
-### 2026-05-11 — Refactor de producto + Prisma + seed + edición completa de inventario
+### 2026-05-11 — Refactor de producto + Prisma + seed + edición de inventario
 - **Herramienta**: ChatGPT
 - **Contexto**: Estaba ampliando un sistema de inventario para añadir edición de productos, nuevos campos (descripción larga, proveedor, precios extendidos) y arreglar errores de Prisma tras cambios en la base de datos.
 
