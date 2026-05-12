@@ -1,0 +1,95 @@
+.offers {
+  text-align: center;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;        
+  padding: 2rem;
+  background-color: var(--glass);
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+}
+
+.banner {
+  background: var(--accent);
+  color: #000;
+  font-weight: bold;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.grid {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  max-width: 300px;
+  background: var(--glass);
+  padding: 1rem 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.old {
+  text-decoration: line-through;
+  color: #ccc;
+}
+
+.new {
+  color: #ff4d4d;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.addToCartBtn {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  margin-top: 0.8rem;
+
+  background: linear-gradient(135deg, #6a5af9, #b44cff);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: 0.25s ease;
+  box-shadow: 0 4px 12px rgba(180, 76, 255, 0.3);
+}
+
+.addToCartBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(180, 76, 255, 0.45);
+  background: linear-gradient(135deg, #7b6bff, #c65cff);
+}
+
+.addToCartBtn:active {
+  transform: scale(0.97);
+}
+
+/* Animación cuando se añade al carrito */
+.added {
+  background: #4caf50 !important;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4) !important;
+}
+
+.discount {
+  background: #ff4d4d;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  justify-content: center;
+}

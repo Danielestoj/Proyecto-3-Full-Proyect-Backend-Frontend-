@@ -1,0 +1,69 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--glass-strong);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.nav a {
+  margin: 0 1rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.nav a:hover {
+  color: var(--primary-hover);
+}
+
+.userActions a {
+  margin-left: 1rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* 🔥 separación entre nombre y botón */
+}
+
+/* Decoración del nombre del usuario */
+.userName {
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  font-weight: bold;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: 0.2s ease;
+}
+
+.userName:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Botón de salir */
+.logoutBtn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.logoutBtn:hover {
+  background: #e63b3b;
+}
+
