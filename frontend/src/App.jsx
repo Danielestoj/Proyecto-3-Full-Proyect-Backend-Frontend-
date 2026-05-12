@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+import Navbar from "./components/HeaderAdmin/Navbar";
 
 // 🛒 Componentes de la tienda friki
 import Header from "./components/Header/Header";
@@ -12,9 +13,9 @@ import Footer from "./components/Footer/Footer";
 import ProtectedRoute from "./router/ProtectedRoute";
 
 // 🧰 Panel Admin
-import Dashboard from "./pages/Admin/Dashboard";
-import ProductList from "./pages/Admin/ProductList";
-import ProductDetail from "./pages/Admin/ProductDetail";
+import Dashboard from "./pages/Admin/Dashboard/Dashboard";
+import ProductList from "./pages/Admin/ProductList/ProductList";
+import ProductDetail from "./pages/Admin/ProductDetail/ProductDetail";
 import ProductNew from "./pages/Admin/ProductNew";
 import Login from "./pages/Admin/Login";
 import Register from "./pages/Admin/Register";
@@ -23,11 +24,13 @@ import Register from "./pages/Admin/Register";
 import Cart from "./pages/Cart/Cart";
 
 export default function App() {
-  return (
-    <BrowserRouter>
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
+  return (
+    <>
       {/* HEADER GLOBAL */}
-      <Header />
+      {isAdminRoute ? <Navbar /> : <Header />}
 
       <Routes>
 
@@ -90,7 +93,6 @@ export default function App() {
         />
 
       </Routes>
-
-    </BrowserRouter>
+    </>
   );
 }

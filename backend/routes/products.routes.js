@@ -11,10 +11,28 @@ import {
 import { verifyToken, requireRole } from '../middleware/auth.js'
 import validate from '../middleware/validate.js'
 import { createProductSchema, updateProductSchema, movementSchema } from '../schemas/product.schema.js'
+import prisma from '../lib/prisma.js'
 
 const router = Router()
 
 router.get('/', verifyToken, getProducts)
+router.get('/featured', async (req, res) => {
+  try {
+    const products = await prisma.product.findMany({
+      take: 4,
+      orderBy: {
+        id: 'desc'
+      }
+    })
+
+    res.json(products)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      error: 'Error obteniendo productos destacados'
+    })
+  }
+})
 router.get('/:id', verifyToken, getProduct)
 router.post('/', verifyToken, requireRole('MANAGER', 'ADMIN'), validate(createProductSchema), createProduct)
 router.put('/:id', verifyToken, requireRole('MANAGER', 'ADMIN'), validate(updateProductSchema), updateProduct)
