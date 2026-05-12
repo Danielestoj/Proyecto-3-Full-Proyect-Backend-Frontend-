@@ -1,5 +1,5 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+/*
 body {
   font-family: system-ui, -apple-system, sans-serif;
   background: #f0f2f5;
@@ -8,3 +8,62 @@ body {
 }
 
 a { color: inherit; }
+*/
+
+:root {
+  /* 🌌 Fondo azul-violeta profundo */
+  --bg-gradient: linear-gradient(
+    135deg,
+    #0a0f2d,
+    #1a1446,
+    #2a1b6f
+  );
+
+  /* 🔮 Violeta suave para botones y títulos */
+  --primary: #a78bfa;
+  --primary-hover: #8b5cf6;
+
+  /* 🌅 Rosa cálido para acentos */
+  --accent: #ff7edb;
+
+  /* 🧊 Glassmorphism */
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-strong: rgba(255, 255, 255, 0.12);
+
+  /* 🎭 Texto y sombras */
+  --text: #ffffff;
+  --shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+
+  /* 🔘 Bordes y animaciones */
+  --radius: 12px;
+  --radius-lg: 20px;
+  --transition: 0.25s ease;
+}
+
+/* Fondo global */
+body {
+  background: var(--bg-gradient);
+  color: var(--text);
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    #ff9a5a,
+    #ff6f91,
+    #ff85a1
+  );
+  filter: blur(80px);
+  opacity: 0.15;
+  z-index: -1;
+}

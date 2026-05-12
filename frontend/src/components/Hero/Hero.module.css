@@ -1,0 +1,32 @@
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--glass);
+  border-radius: var(--radius-lg);
+  margin: 2rem auto;
+  max-width: 900px;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  color: var(--accent);
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.btnPrimary {
+  background: var(--primary);
+  color: var(--text);
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btnPrimary:hover {
+  background: var(--primary-hover);
+}
