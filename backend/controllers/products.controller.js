@@ -5,16 +5,34 @@ const include = { category: true, _count: { select: { movements: true } } }
 export const getProducts = async (req, res, next) => {
   try {
     const { categoryId, lowStock } = req.query
+
     const products = await prisma.product.findMany({
-      where: { ...(categoryId && { categoryId: Number(categoryId) }) },
-      include,
-      orderBy: { name: 'asc' },
+      where: {
+        ...(categoryId && { categoryId: Number(categoryId) })
+      },
+      include: {
+        category: true,
+        supplier: true,
+        variants: {
+          include: {
+            images: true
+          }
+        }
+      },
+      orderBy: { name: 'asc' }
     })
-    const result = lowStock === 'true'
-      ? products.filter(p => p.stock <= p.minStock)
-      : products
+
+    // ⚠️ stock está en VARIANTS, no en PRODUCT
+    const result =
+      lowStock === 'true'
+        ? products.filter(p =>
+            p.variants.some(v => v.stock <= v.minStock)
+          )
+        : products
+
     res.json(result)
   } catch (err) {
+    console.error("GET PRODUCTS ERROR:", err)
     next(err)
   }
 }
@@ -23,17 +41,29 @@ export const getProduct = async (req, res, next) => {
   try {
     const product = await prisma.product.findUniqueOrThrow({
       where: { id: Number(req.params.id) },
+
       include: {
         category: true,
-        movements: {
-          orderBy: { createdAt: 'desc' },
-          take: 10,
-          include: { user: { select: { name: true } } },
-        },
-      },
+        supplier: true,
+
+        variants: {
+          include: {
+            images: true,
+
+            movements: {
+              orderBy: { createdAt: 'desc' },
+              include: {
+                user: { select: { name: true } }
+              }
+            }
+          }
+        }
+      }
     })
+
     res.json(product)
   } catch (err) {
+    console.error("GET PRODUCT ERROR:", err)
     next(err)
   }
 }

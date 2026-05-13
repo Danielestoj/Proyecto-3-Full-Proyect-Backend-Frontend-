@@ -1,182 +1,125 @@
-.main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
-.back { display: inline-block; color: #666; text-decoration: none; margin-bottom: 1.5rem; font-size: 0.9rem; }
-.back:hover { color: #333; }
-
-.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-.header h1 { font-size: 1.8rem; color: #1b4332; margin-bottom: 0.3rem; }
-.sku { font-family: monospace; color: #999; font-size: 0.9rem; }
-
-.badge { padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.82rem; font-weight: 700; }
-.badgeAlert { background: #fef3c7; color: #92400e; }
-.badgeOk { background: #d1fae5; color: #065f46; }
-
-.info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 3rem;
-  margin-bottom: 2rem;
-}
-.infoItem {
-  background: white;
+.main {
+  max-width: 1100px;
+  margin: 2rem auto;
   padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-.infoItem span { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 0.04em; }
-.infoItem strong { font-size: 1.2rem; color: #1b4332; }
-.alertText { color: #f59e0b !important; }
-
-.movSection, .histSection { margin-bottom: 2rem; }
-.movSection h2, .histSection h2 { font-size: 1.1rem; color: #333; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
-
-.movForm {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.06);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-.movForm label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9rem; font-weight: 500; color: #444; }
-.movForm label:last-of-type { grid-column: 1 / -1; }
-.movForm input, .movForm select { padding: 0.6rem 0.8rem; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 0.95rem; outline: none; }
-.movForm input:focus, .movForm select:focus { border-color: #1b4332; }
-.movForm button {
-  grid-column: 1 / -1;
-  padding: 0.7rem;
-  background: #1b4332;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.movForm button:hover:not(:disabled) { background: #52b788; }
-.movForm button:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.msg { padding: 0.7rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1rem; }
-.success { background: #d1fae5; color: #065f46; }
-.error { background: #fee2e2; color: #991b1b; }
-
-.movList { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-.movItem {
-  background: white;
-  padding: 0.8rem 1.2rem;
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  font-size: 0.9rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-}
-.movType { font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 4px; }
-.in { background: #d1fae5; color: #065f46; }
-.out { background: #fee2e2; color: #991b1b; }
-.movMeta { margin-left: auto; color: #999; font-size: 0.82rem; }
-
-.empty { color: #999; font-size: 0.9rem; }
-.center { text-align: center; margin-top: 5rem; color: #666; }
-
-
-.productInfo {
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0,3);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  gap: 2rem;
 }
 
 .topBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+}
+
+.back {
+  color: #666;
+  text-decoration: none;
 }
 
 .editBtn {
+  width: 42px;
+  height: 42px;
   border: none;
   background: #111827;
   color: white;
-  width: 42px;
-  height: 42px;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: 0.2s;
 }
 
-.editBtn:hover {
-  background: #1f2937;
-}
-
-.saveContainer {
-  margin-top: 2rem;
+.header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  margin: 1rem 0;
 }
 
-.saveBtn {
-  border: none;
-  background: #2563eb;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
+.sku {
+  font-family: monospace;
+  color: #888;
 }
 
-.saveBtn:hover {
-  background: #1d4ed8;
-}
-
-.infoItem input,
-h1 input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
-}
-
-.descriptionSection {
-  margin-top: 2rem;
-  background: #fff;
-  border-radius: 14px;
-  padding: 1.5rem;
-}
-
-.descriptionSection h2 {
+/* VARIANTS */
+.variants {
+  display: flex;
+  gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
-.descriptionTextarea {
-  width: 100%;
-  min-height: 220px;
-  resize: vertical;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
+.variants button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+}
+
+.activeVariant {
+  background: #1b4332;
+  color: white;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: white;
   padding: 1rem;
-  font-size: 14px;
-  line-height: 1.6;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.descriptionText {
-  white-space: pre-line;
-  line-height: 1.7;
-  color: #374151;
+.card h3 {
+  margin-bottom: 0.5rem;
+  color: #1b4332;
 }
 
-.infoItem img {
-  max-width: 100%;
-  border-radius: 8px;
+.card label {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 0.3rem;
+}
+
+.card input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* SAVE */
+.saveBtn {
+  margin-top: 2rem;
+  padding: 0.8rem 1.2rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* CENTER */
+.center {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.previewImage {
+  width: 100%;
+  max-height: 180px;
+  object-fit: contain;
   margin-top: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: white;
+}
+
+.imageUrlText {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+  word-break: break-all;
 }

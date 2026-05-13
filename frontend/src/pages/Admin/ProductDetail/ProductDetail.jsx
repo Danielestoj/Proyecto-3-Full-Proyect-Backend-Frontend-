@@ -6,10 +6,15 @@ import styles from './ProductDetail.module.css'
 
 export default function ProductDetail() {
   const { id } = useParams()
-  const { usuario } = useAuth()
+  const { user: usuario } = useAuth()
 
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const [selectedVariant, setSelectedVariant] = useState(null)
+  const [editing, setEditing] = useState(false)
+
+  const [editForm, setEditForm] = useState({})
 
   const [form, setForm] = useState({
     type: 'IN',
@@ -21,52 +26,18 @@ export default function ProductDetail() {
   const [msgType, setMsgType] = useState('success')
   const [submitting, setSubmitting] = useState(false)
 
-  // NUEVO
-  const [editing, setEditing] = useState(false)
-
-  // NUEVO
-  const [editForm, setEditForm] = useState({
-    name: '',
-    sku: '',
-    supplier: '',
-    supplierReference: '',
-    imageUrl: '',
-    price: '',
-    retailPrice: '',
-    sellingPrice: '',
-    stock: '',
-    minStock: '',
-    deliveryTime: '',
-  })
-
-  const canManage = ['MANAGER', 'ADMIN'].includes(usuario?.role)
+  const canManage = ['MANAGER', 'ADMIN'].includes(usuario?.role?.toUpperCase())
 
   const fetchProduct = () => {
     const token = localStorage.getItem('token')
 
     fetch(`${API_URL}/api/products/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())
       .then(data => {
         setProduct(data)
-
-        // NUEVO
-        setEditForm({
-          name: data.name || '',
-          sku: data.sku || '',
-          supplier: data.supplier || '',
-          supplierReference: data.supplierReference || '',
-          imageUrl: data.imageUrl || '',
-          price: data.price || '',
-          retailPrice: data.retailPrice || '',
-          sellingPrice: data.sellingPrice || '',
-          stock: data.stock || '',
-          minStock: data.minStock || '',
-          deliveryTime: data.deliveryTime || '',
-        })
+        setSelectedVariant(data.variants?.[0] || null)
       })
       .finally(() => setLoading(false))
   }
@@ -75,274 +46,194 @@ export default function ProductDetail() {
     fetchProduct()
   }, [id])
 
-  const handleMovement = async e => {
-    e.preventDefault()
+  useEffect(() => {
+    if (!selectedVariant) return
 
-    setSubmitting(true)
-    setMsg(null)
+    setEditForm({
+      name: selectedVariant.name || '',
+      sku: selectedVariant.sku || '',
 
+      supplierReference: selectedVariant.supplierReference || '',
+      availability: selectedVariant.availability || '',
+
+      supplierPrice: selectedVariant.supplierPrice || '',
+      retailPrice: selectedVariant.retailPrice || '',
+      sellingPrice: selectedVariant.sellingPrice || '',
+      compareAtPrice: selectedVariant.compareAtPrice || '',
+      salePrice: selectedVariant.salePrice || '',
+
+      stock: selectedVariant.stock || 0,
+      reservedStock: selectedVariant.reservedStock || 0,
+      minStock: selectedVariant.minStock || 0,
+      deliveryTime: selectedVariant.deliveryTime || 0,
+
+      imageUrl: selectedVariant.imageUrl || '',
+    })
+  }, [selectedVariant])
+
+  const handleSave = async () => {
     const token = localStorage.getItem('token')
 
-    try {
-      const res = await fetch(
-        `${API_URL}/api/products/${id}/movements`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            ...form,
-            quantity: Number(form.quantity),
-          }),
-        }
-      )
+    const res = await fetch(`${API_URL}/api/variants/${selectedVariant.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ...editForm,
+        supplierPrice: Number(editForm.supplierPrice),
+        retailPrice: Number(editForm.retailPrice),
+        sellingPrice: Number(editForm.sellingPrice),
+        compareAtPrice: Number(editForm.compareAtPrice),
+        salePrice: editForm.salePrice ? Number(editForm.salePrice) : null,
+        stock: Number(editForm.stock),
+        reservedStock: Number(editForm.reservedStock),
+        minStock: Number(editForm.minStock),
+        deliveryTime: Number(editForm.deliveryTime),
+      }),
+    })
 
-      const data = await res.json()
-
-      if (!res.ok) throw new Error(data.error)
-
-      setMsgType('success')
-      setMsg(`Movimiento registrado. Nuevo stock: ${data.product.stock}`)
-
-      setForm({
-        type: 'IN',
-        quantity: '',
-        reason: '',
-      })
-
-      fetchProduct()
-    } catch (err) {
+    if (!res.ok) {
       setMsgType('error')
-      setMsg(err.message)
-    } finally {
-      setSubmitting(false)
+      setMsg('Error al guardar variante')
+      return
     }
+
+    setEditing(false)
+    fetchProduct()
   }
 
-  // NUEVO
-  const handleSaveChanges = async () => {
-    const token = localStorage.getItem('token')
+  if (loading) return <div className={styles.center}>Cargando...</div>
+  if (!product) return <div className={styles.center}>No encontrado</div>
 
-    try {
-      setSubmitting(true)
-      setMsg(null)
-
-      const res = await fetch(`${API_URL}/api/products/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...editForm,
-          price: Number(editForm.price),
-          retailPrice: Number(editForm.retailPrice),
-          sellingPrice: Number(editForm.sellingPrice),
-          stock: Number(editForm.stock),
-          minStock: Number(editForm.minStock),
-          deliveryTime: Number(editForm.deliveryTime),
-        }),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Error al guardar')
-      }
-
-      setMsgType('success')
-      setMsg('Producto actualizado correctamente')
-
-      setEditing(false)
-
-      fetchProduct()
-    } catch (err) {
-      setMsgType('error')
-      setMsg(err.message)
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className={styles.center}>
-        Cargando producto...
-      </div>
-    )
-  }
-
-  if (!product || product.error) {
-    return (
-      <div className={styles.center}>
-        Producto no encontrado.
-        <Link to="/products">Volver</Link>
-      </div>
-    )
-  }
+  const v = selectedVariant
 
   return (
     <main className={styles.main}>
 
       {/* TOP BAR */}
       <div className={styles.topBar}>
-        <Link to="/products" className={styles.back}>
-          ← Volver a productos
-        </Link>
+        <Link to="/admin/products" className={styles.back}>← Volver</Link>
 
         {canManage && (
-          <button className={styles.editBtn} onClick={() => setEditing(!editing)} > {editing ? '✖' : '✏️'} </button>)}
-      </div>
-
-
-    {/* HEADER */}
-    <div className={styles.header}>
-      <div>
-        <h1>{editing ? <input value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} /> : product.name}</h1>
-        {editing ? <input value={editForm.sku} onChange={e => setEditForm({ ...editForm, sku: e.target.value })} /> : <span className={styles.sku}>{product.sku}</span>}
-      </div>
-
-      <span className={`${styles.badge} ${product.stock <= product.minStock ? styles.badgeAlert : styles.badgeOk}`}>
-        {product.stock <= product.minStock ? '⚠ Stock bajo' : 'Stock OK'}
-      </span>
-    </div>
-
-    {/* INFO */}
-    <div className={styles.info}>
-      <div className={styles.productInfo}>
-        <div className={styles.infoItem}>
-          <span>Proveedor</span>
-          {editing ? <input value={editForm.supplier} onChange={e => setEditForm({ ...editForm, supplier: e.target.value })} /> : <strong>{product.supplier}</strong>}
-        </div>
-
-        <div className={styles.infoItem}>
-          <span>Referencia del proveedor</span>
-          {editing ? <input value={editForm.supplierReference} onChange={e => setEditForm({ ...editForm, supplierReference: e.target.value })} /> : <strong>{product.supplierReference}</strong>}
-        </div>
-
-        <div className={styles.infoItem}>
-          <span>Imagen</span>
-          {editing ? <input type="url" value={editForm.imageUrl} onChange={e => setEditForm({ ...editForm, imageUrl: e.target.value })} /> : <strong>{product.imageUrl && <img src={product.imageUrl} alt={product.name} />}</strong>}
-        </div>
-      </div>
-
-      <div className={styles.productInfo}>
-        <div className={styles.infoItem}>
-          <span>Categoría</span>
-          <strong>{product.category?.name}</strong>
-        </div>
-
-        <div className={styles.infoItem}>
-          <span>Precio</span>
-          {editing ? <input type="number" step="0.01" value={editForm.price} onChange={e => setEditForm({ ...editForm, price: e.target.value })} /> : <strong>€{parseFloat(product.price).toFixed(2)}</strong>}
-        </div>
-
-        <div className={styles.infoItem}>
-          <span>Precio PVP</span>
-          {editing ? <input type="number" step="0.01" value={editForm.retailPrice} onChange={e => setEditForm({ ...editForm, retailPrice: e.target.value })} /> : <strong>€{parseFloat(product.retailPrice).toFixed(2)}</strong>}
-        </div>
-
-        <div className={styles.infoItem}>
-          <span>Precio Venta</span>
-          {editing ? <input type="number" step="0.01" value={editForm.sellingPrice} onChange={e => setEditForm({ ...editForm, sellingPrice: e.target.value })} /> : <strong>€{parseFloat(product.sellingPrice).toFixed(2)}</strong>}
-        </div>
-      </div>
-
-      <div className={styles.productInfo}>
-        <div className={styles.infoItem}>
-          <span>Stock actual</span>
-          {editing ? <input type="number" value={editForm.stock} onChange={e => setEditForm({ ...editForm, stock: e.target.value })} /> : <strong className={product.stock <= product.minStock ? styles.alertText : ''}>{product.stock} uds</strong>}
-        </div>
-
-        <div className={styles.infoItem}>
-          <span>Stock mínimo</span>
-          {editing ? <input type="number" value={editForm.minStock} onChange={e => setEditForm({ ...editForm, minStock: e.target.value })} /> : <strong>{product.minStock} uds</strong>}
-        </div>
-
-        <div className={styles.infoItem}>
-          <span>Tiempo de entrega</span>
-          {editing ? <input type="number" value={editForm.deliveryTime} onChange={e => setEditForm({ ...editForm, deliveryTime: e.target.value })} /> : <strong>{product.deliveryTime} días</strong>}
-        </div>
-      </div>
-    </div>
-
-    {/* DESCRIPCIÓN */}
-    <div className={styles.descriptionSection}>
-      <h2>Información del producto</h2>
-      {editing ? <textarea className={styles.descriptionTextarea} value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} rows="10" /> : <p className={styles.descriptionText}>{product.description || 'Sin información'}</p>}
-    </div>
-
-    {/* GUARDAR */}
-    {editing && (
-      <div className={styles.saveContainer}>
-        <button className={styles.saveBtn} onClick={handleSaveChanges} disabled={submitting}>
-          {submitting ? 'Guardando...' : 'Guardar cambios'}
-        </button>
-      </div>
-    )}
-
-    {/* MENSAJES */}
-    {msg && <p className={`${styles.msg} ${styles[msgType]}`}>{msg}</p>}
-
-    {/* MOVIMIENTOS */}
-    {canManage && (
-      <section className={styles.movSection}>
-        <h2>Registrar movimiento</h2>
-
-        <form className={styles.movForm} onSubmit={handleMovement}>
-          <label>
-            Tipo
-            <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
-              <option value="IN">↑ Entrada</option>
-              <option value="OUT">↓ Salida</option>
-            </select>
-          </label>
-
-          <label>
-            Cantidad
-            <input type="number" min="1" value={form.quantity} onChange={e => setForm({ ...form, quantity: e.target.value })} required />
-          </label>
-
-          <label>
-            Motivo
-            <input type="text" value={form.reason} onChange={e => setForm({ ...form, reason: e.target.value })} placeholder="Ej: Compra proveedor..." required />
-          </label>
-
-          <button type="submit" disabled={submitting}>
-            {submitting ? 'Registrando...' : 'Registrar'}
+          <button className={styles.editBtn} onClick={() => setEditing(!editing)}>
+            {editing ? '✖' : '✏️'}
           </button>
-        </form>
-      </section>
-    )}
+        )}
+      </div>
 
-    {/* HISTORIAL */}
-    <section className={styles.histSection}>
-      <h2>Historial de movimientos</h2>
+      {/* HEADER */}
+      <div className={styles.header}>
+        <h1>{product.name}</h1>
+        <span className={styles.sku}>{v?.sku}</span>
+      </div>
 
-      {product.movements?.length === 0 ? (
-        <p className={styles.empty}>Sin movimientos registrados.</p>
-      ) : (
-        <ul className={styles.movList}>
-          {product.movements?.map(m => (
-            <li key={m.id} className={styles.movItem}>
-              <span className={`${styles.movType} ${m.type === 'IN' ? styles.in : styles.out}`}>
-                {m.type === 'IN' ? '↑' : '↓'} {m.quantity} uds
-              </span>
+      {/* VARIANTES */}
+      <div className={styles.variants}>
+        {product.variants?.map(x => (
+          <button
+            key={x.id}
+            onClick={() => setSelectedVariant(x)}
+            className={v?.id === x.id ? styles.activeVariant : ''}
+          >
+            {x.name}
+          </button>
+        ))}
+      </div>
 
-              <span>{m.reason}</span>
+      {/* INFO GRID */}
+      <div className={styles.grid}>
 
-              <span className={styles.movMeta}>
-                {m.user?.name} · {new Date(m.createdAt).toLocaleDateString('es-ES')}
-              </span>
-            </li>
-          ))}
-        </ul>
+        {/* PRODUCTO */}
+        <section className={styles.card}>
+          <h3>Producto</h3>
+
+          <label>Nombre</label>
+          <input disabled={!editing} value={editForm.name}
+            onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
+
+          <label>SKU</label>
+          <input disabled={!editing} value={editForm.sku}
+            onChange={e => setEditForm({ ...editForm, sku: e.target.value })} />
+
+          <label>Imagen URL</label>
+          <img src={selectedVariant?.images?.[0]?.url} alt="Imagen del producto" className={styles.productImage} />
+          <input disabled={!editing} value={editForm.imageUrl}
+            onChange={e => setEditForm({ ...editForm, imageUrl: e.target.value })} />
+        </section>
+
+        {/* PROVEEDOR */}
+        <section className={styles.card}>
+          <h3>Proveedor</h3>
+
+          <label>Referencia proveedor</label>
+          <input disabled={!editing} value={editForm.supplierReference}
+            onChange={e => setEditForm({ ...editForm, supplierReference: e.target.value })} />
+
+          <label>Disponibilidad</label>
+          <input disabled={!editing} value={editForm.availability}
+            onChange={e => setEditForm({ ...editForm, availability: e.target.value })} />
+        </section>
+
+        {/* PRECIOS */}
+        <section className={styles.card}>
+          <h3>Precios</h3>
+
+          <label>Precio compra</label>
+          <input type="number" disabled={!editing} value={editForm.supplierPrice}
+            onChange={e => setEditForm({ ...editForm, supplierPrice: e.target.value })} />
+
+          <label>Precio PVP</label>
+          <input type="number" disabled={!editing} value={editForm.retailPrice}
+            onChange={e => setEditForm({ ...editForm, retailPrice: e.target.value })} />
+
+          <label>Precio venta</label>
+          <input type="number" disabled={!editing} value={editForm.sellingPrice}
+            onChange={e => setEditForm({ ...editForm, sellingPrice: e.target.value })} />
+
+          <label>Precio comparativo</label>
+          <input type="number" disabled={!editing} value={editForm.compareAtPrice}
+            onChange={e => setEditForm({ ...editForm, compareAtPrice: e.target.value })} />
+
+          <label>Precio oferta</label>
+          <input type="number" disabled={!editing} value={editForm.salePrice}
+            onChange={e => setEditForm({ ...editForm, salePrice: e.target.value })} />
+        </section>
+
+        {/* STOCK */}
+        <section className={styles.card}>
+          <h3>Stock</h3>
+
+          <label>Stock actual</label>
+          <input type="number" disabled={!editing} value={editForm.stock}
+            onChange={e => setEditForm({ ...editForm, stock: e.target.value })} />
+
+          <label>Reservado</label>
+          <input type="number" disabled={!editing} value={editForm.reservedStock}
+            onChange={e => setEditForm({ ...editForm, reservedStock: e.target.value })} />
+
+          <label>Stock mínimo</label>
+          <input type="number" disabled={!editing} value={editForm.minStock}
+            onChange={e => setEditForm({ ...editForm, minStock: e.target.value })} />
+        </section>
+
+        {/* LOGÍSTICA */}
+        <section className={styles.card}>
+          <h3>Logística</h3>
+
+          <label>Días de entrega</label>
+          <input type="number" disabled={!editing} value={editForm.deliveryTime}
+            onChange={e => setEditForm({ ...editForm, deliveryTime: e.target.value })} />
+        </section>
+      </div>
+
+      {/* SAVE */}
+      {editing && (
+        <button className={styles.saveBtn} onClick={handleSave}>
+          Guardar cambios
+        </button>
       )}
-    </section>
-
-
     </main>
   )
 }

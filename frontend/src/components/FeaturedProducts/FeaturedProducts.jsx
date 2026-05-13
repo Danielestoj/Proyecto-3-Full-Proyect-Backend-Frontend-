@@ -48,29 +48,49 @@ export default function FeaturedProducts() {
       <h2>Productos Destacados</h2>
 
       <div className={styles.grid}>
-        {featured.map((product) => (
-          <div key={product.id} className={styles.card}>
-            <img
-              src={product.image}
-              alt={product.name}
-            />
+        {featured.map((product) => {
 
-            <h3>{product.name}</h3>
+          const variant = product.variants?.[0];
 
-            <div className={styles.prices}>
-              <p className={styles.price}>
-                €{parseFloat(product.sellingPrice).toFixed(2)}
-              </p>
+          if (!variant) return null;
+
+          return (
+            <div key={variant.id} className={styles.card}>
+              <img
+                src={variant.images?.[0]?.url || "/placeholder.jpg"}
+                alt={`${product.name} ${variant.name}`}
+              />
+
+              <h3>
+                {product.name}
+                {variant.name && ` - ${variant.name}`}
+              </h3>
+
+              <div className={styles.prices}>
+                <p className={styles.price}>
+                  €{parseFloat(variant.sellingPrice).toFixed(2)}
+                </p>
+              </div>
+
+              <button
+                className={styles.addToCartBtn}
+                onClick={() =>
+                  addToCart({
+                    productId: product.id,
+                    variantId: variant.id,
+                    name: product.name,
+                    variantName: variant.name,
+                    price: variant.sellingPrice,
+                    image: variant.images?.[0]?.url,
+                    sku: variant.sku,
+                  })
+                }
+              >
+                Añadir al carrito
+              </button>
             </div>
-
-            <button
-              className={styles.addToCartBtn}
-              onClick={() => addToCart(product)}
-            >
-              Añadir al carrito
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

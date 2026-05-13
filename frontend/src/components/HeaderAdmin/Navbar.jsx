@@ -10,10 +10,11 @@ export default function Navbar() {
       <div className={styles.links}>
         {user ? (
           <>
-            <Link to="/">Dashboard</Link>
-            <Link to="/products">Productos</Link>
-            {['MANAGER', 'ADMIN'].includes(user.role) && (
-              <Link to="/products/new" className={styles.btnPrimary}>+ Producto</Link>
+            <Link to="/">Página Principal</Link>
+            <Link to="/admin">Dashboard</Link>
+            <Link to="/admin/products">Productos</Link>
+            {['manager', 'admin'].includes(user.role) && (
+              <Link to="/admin/products/new" className={styles.btnPrimary}>+ Producto</Link>
             )}
             <span className={styles.roleTag}>{user.role}</span>
             <button className={styles.btnLogout} onClick={logout}>Salir</button>

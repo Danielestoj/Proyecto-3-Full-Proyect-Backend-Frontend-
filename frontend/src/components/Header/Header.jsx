@@ -18,18 +18,18 @@ export default function Header() {
         <Link to="/tienda">Tienda</Link>
         <Link to="/ofertas">Ofertas</Link>
         <Link to="/carrito">Carrito ({totalItems})</Link>
-
-
-        {user &&
-          ["admin", "manager"].includes(user.role.toLowerCase()) && (
-            <Link to="/admin">Panel Admin</Link>
-          )}
       </nav>
 
       <div className={styles.userActions}>
         {user ? (
           <>
-            <span className={styles.userName}>{user.name}</span>
+            {user && ["admin", "manager"].includes(user.role.toLowerCase()) ? (
+              <Link to="/admin" className={styles.userName}>
+                {user.name}
+              </Link>
+            ) : (
+              <span className={styles.userName}>Hola, {user.name}</span>
+            )}
             <button className={styles.logoutBtn} onClick={logout}>Salir</button>
           </>
         ) : (

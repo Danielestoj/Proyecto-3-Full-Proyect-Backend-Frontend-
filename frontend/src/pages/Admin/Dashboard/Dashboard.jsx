@@ -9,9 +9,16 @@ export default function Dashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-    fetch(`${API_URL}/api/dashboard`, { headers: { Authorization: `Bearer ${token}` } })
+
+    fetch(`${API_URL}/api/dashboard`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(r => r.json())
       .then(setData)
+      .catch(err => {
+        console.error('Dashboard error:', err)
+        setData(null)
+      })
       .finally(() => setLoading(false))
   }, [])
 
@@ -27,16 +34,21 @@ export default function Dashboard() {
           <span className={styles.statValue}>{data.totalProducts}</span>
           <span className={styles.statLabel}>Productos</span>
         </div>
+
         <div className={styles.stat}>
           <span className={styles.statValue}>{data.totalStock}</span>
           <span className={styles.statLabel}>Unidades en stock</span>
         </div>
+
         <div className={`${styles.stat} ${data.lowStockCount > 0 ? styles.warning : ''}`}>
           <span className={styles.statValue}>{data.lowStockCount}</span>
           <span className={styles.statLabel}>Alertas de stock bajo</span>
         </div>
+
         <div className={styles.stat}>
-          <span className={styles.statValue}>€{data.totalValue?.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</span>
+          <span className={styles.statValue}>
+            €{data.totalValue?.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+          </span>
           <span className={styles.statLabel}>Valor total del inventario</span>
         </div>
       </div>
@@ -48,9 +60,12 @@ export default function Dashboard() {
             {data.lowStockProducts.map(p => (
               <li key={p.id} className={`${styles.item} ${styles.alert}`}>
                 <div>
-                  <Link to={`/products/${p.id}`} className={styles.productName}>{p.name}</Link>
+                  <Link to={`/products/${p.id}`} className={styles.productName}>
+                    {p.name}
+                  </Link>
                   <span className={styles.sku}>{p.sku}</span>
                 </div>
+
                 <span className={styles.stockBadge}>
                   Stock: {p.stock} / Mínimo: {p.minStock}
                 </span>
@@ -62,20 +77,33 @@ export default function Dashboard() {
 
       <section className={styles.section}>
         <h2>Últimos movimientos</h2>
+
         <ul className={styles.list}>
-          {data.recentMovements?.map(m => (
-            <li key={m.id} className={styles.item}>
-              <div>
-                <span className={`${styles.movType} ${m.type === 'IN' ? styles.in : styles.out}`}>
-                  {m.type === 'IN' ? '↑ ENTRADA' : '↓ SALIDA'}
+          {data.recentMovements?.map(m => {
+            const product = m.variant?.product
+
+            return (
+              <li key={m.id} className={styles.item}>
+                <div>
+                  <span
+                    className={`${styles.movType} ${
+                      m.type === 'IN' ? styles.in : styles.out
+                    }`}
+                  >
+                    {m.type === 'IN' ? '↑ ENTRADA' : '↓ SALIDA'}
+                  </span>
+
+                  <Link to={`/products/${product?.id}`}>
+                    {product?.name}
+                  </Link>
+                </div>
+
+                <span className={styles.movMeta}>
+                  {m.quantity} uds · {m.reason} · {m.user?.name}
                 </span>
-                <Link to={`/products/${m.productId}`}>{m.product?.name}</Link>
-              </div>
-              <span className={styles.movMeta}>
-                {m.quantity} uds · {m.reason} · {m.user?.name}
-              </span>
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ul>
       </section>
     </main>

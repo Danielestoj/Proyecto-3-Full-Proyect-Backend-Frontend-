@@ -26,12 +26,29 @@
 }
 
 .card {
-  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  background: var(--glass);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
   background: var(--glass);
   padding: 1rem 2rem;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
+
+.card img {
+  width: 100%;
+  max-width: 250px;
+  max-height: 250px;
+  border-radius: var(--radius);
+}
+
+
 
 .old {
   text-decoration: line-through;

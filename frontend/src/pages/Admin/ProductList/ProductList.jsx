@@ -7,68 +7,130 @@ import styles from './ProductList.module.css'
 export default function ProductList() {
   const { usuario } = useAuth()
   const [products, setProducts] = useState([])
+  const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
   const [lowStockOnly, setLowStockOnly] = useState(false)
 
   const fetchProducts = (low = false) => {
     const token = localStorage.getItem('token')
     const query = low ? '?lowStock=true' : ''
+
     setLoading(true)
-    fetch(`${API_URL}/api/products${query}`, { headers: { Authorization: `Bearer ${token}` } })
+
+    fetch(`${API_URL}/api/products${query}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(r => r.json())
-      .then(d => setProducts(Array.isArray(d) ? d : []))
+      .then(data => {
+        const safe = Array.isArray(data) ? data : []
+        setProducts(safe)
+
+        // 🔥 APLANAR: cada variante = una fila
+        const flat = safe.flatMap(product =>
+          (product.variants || []).map(variant => ({
+            productId: product.id,
+            productName: product.name,
+            category: product.category,
+            supplier: product.supplier,
+            ...variant
+          }))
+        )
+
+        setRows(flat)
+      })
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { fetchProducts(lowStockOnly) }, [lowStockOnly])
+  useEffect(() => {
+    fetchProducts(lowStockOnly)
+  }, [lowStockOnly])
 
   if (loading) return <div className={styles.center}>Cargando productos...</div>
 
   return (
     <main className={styles.main}>
       <div className={styles.header}>
-        <h1>Productos ({products.length})</h1>
+        <h1>Productos ({rows.length})</h1>
+
         <div className={styles.controls}>
           <label className={styles.toggle}>
-            <input type="checkbox" checked={lowStockOnly} onChange={e => setLowStockOnly(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={lowStockOnly}
+              onChange={e => setLowStockOnly(e.target.checked)}
+            />
             Solo stock bajo
           </label>
+
           {['MANAGER', 'ADMIN'].includes(usuario?.role) && (
-            <Link to="/products/new" className={styles.btnNew}>+ Nuevo producto</Link>
+            <Link to="/products/new" className={styles.btnNew}>
+              + Nuevo producto
+            </Link>
           )}
         </div>
       </div>
 
-      {products.length === 0 ? (
+      {rows.length === 0 ? (
         <p className={styles.empty}>No se encontraron productos.</p>
       ) : (
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Nombre</th>
+                <th>Producto</th>
+                <th>Variante</th>
                 <th>SKU</th>
                 <th>Categoría</th>
-                <th>Precio</th>
-                <th>Precio Venta</th>
+                <th>Proveedor</th>
+                <th>Precio compra</th>
+                <th>Precio venta</th>
+                <th>Oferta</th>
                 <th>Stock</th>
                 <th>Estado</th>
               </tr>
             </thead>
+
             <tbody>
-              {products.map(p => (
-                <tr key={p.id}>
-                  <td><Link to={`/products/${p.id}`}>{p.name}</Link></td>
-                  <td className={styles.sku}>{p.sku}</td>
-                  <td>{p.category?.name}</td>
-                  <td>€{parseFloat(p.price).toFixed(2)}</td>
-                  <td>€{parseFloat(p.sellingPrice).toFixed(2)}</td>
-                  <td className={p.stock <= p.minStock ? styles.lowStock : ''}>{p.stock}</td>
+              {rows.map(row => (
+                <tr key={row.id}>
                   <td>
-                    {p.stock <= p.minStock
-                      ? <span className={styles.badgeAlert}>⚠ Stock bajo</span>
-                      : <span className={styles.badgeOk}>OK</span>
-                    }
+                    <Link to={`/admin/products/${row.productId}`}>
+                      {row.productName}
+                    </Link>
+                  </td>
+
+                  <td>{row.name}</td>
+
+                  <td className={styles.sku}>{row.sku}</td>
+
+                  <td>{row.category?.name}</td>
+
+                  <td>{row.supplier?.name}</td>
+
+                  <td>
+                    €{parseFloat(row.supplierPrice).toFixed(2)}
+                  </td>
+
+                  <td>
+                    €{parseFloat(row.sellingPrice).toFixed(2)}
+                  </td>
+
+                  <td>
+                    {row.salePrice
+                      ? `€${parseFloat(row.salePrice).toFixed(2)}`
+                      : '-'}
+                  </td>
+
+                  <td className={row.stock <= row.minStock ? styles.lowStock : ''}>
+                    {row.stock}
+                  </td>
+
+                  <td>
+                    {row.stock <= row.minStock ? (
+                      <span className={styles.badgeAlert}>⚠ Stock bajo</span>
+                    ) : (
+                      <span className={styles.badgeOk}>OK</span>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -8,6 +8,7 @@ import Categories from "./components/Categories/Categories";
 import FeaturedProducts from "./components/FeaturedProducts/FeaturedProducts";
 import Offers from "./components/Offers/Offers";
 import Footer from "./components/Footer/Footer";
+import StorePage from "./pages/Store/StorePage";
 
 // 🔐 Rutas protegidas
 import ProtectedRoute from "./router/ProtectedRoute";
@@ -47,6 +48,8 @@ export default function App() {
             </>
           }
         />
+        {/* 🛍️ TIENDA */}
+        <Route path="/tienda" element={<StorePage />} />
 
         {/* 🔐 LOGIN / REGISTER */}
         <Route path="/login" element={<Login />} />
