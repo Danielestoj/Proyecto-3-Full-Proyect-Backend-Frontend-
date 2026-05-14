@@ -1,5 +1,5 @@
 .main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-.main h1 { font-size: 1.7rem; color: #1b4332; margin-bottom: 2rem; }
+.main h1 { font-size: 1.7rem; color: white; margin-bottom: 2rem; }
 
 .stats {
   display: grid;
@@ -23,7 +23,7 @@
 .statLabel { font-size: 0.85rem; color: #666; }
 
 .section { margin-bottom: 2.5rem; }
-.section h2 { font-size: 1.15rem; color: #333; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
+.section h2 { font-size: 1.15rem; color: white; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
 
 .list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
 

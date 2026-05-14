@@ -11,33 +11,58 @@
   z-index: 100;
 }
 
-.brand { font-size: 1.3rem; font-weight: 700; color: white; text-decoration: none; }
+.brand { 
+  font-size: 1.3rem; 
+  font-weight: 700; 
+  color: white; 
+  text-decoration: none; 
+}
 
-.links { display: flex; gap: 1rem; align-items: center; }
+.links { 
+  display: flex; 
+  gap: 2rem; 
+  align-items: center;
+}
 
-.links a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+.links a { 
+  color: rgba(255,255,255,0.85); 
+  text-decoration: none; 
+  font-size: 1.2rem; 
+  font-weight: 600;
+  transition: color 0.2s; 
+}
+
 .links a:hover { color: white; }
 
-.btnPrimary { background: #52b788; color: white !important; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 600; }
+.btnPrimary { 
+  background: #52b788; 
+  color: white !important; 
+  padding: 0.4rem 1rem; 
+  border-radius: 6px; 
+  font-weight: 600; 
+}
 
 .roleTag {
   background: rgba(255,255,255,0.15);
   color: rgba(255,255,255,0.9);
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 1 rem;
+  font-weight: bold;
   letter-spacing: 0.05em;
 }
 
 .btnLogout {
-  background: transparent;
-  color: rgba(255,255,255,0.7);
+  all: unset;
+  background: red;
+  color: white;
+
   border: 1px solid rgba(255,255,255,0.3);
   padding: 0.35rem 0.8rem;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
+  font-weight: bold;
   transition: all 0.2s;
 }
 .btnLogout:hover { background: rgba(255,255,255,0.1); color: white; }

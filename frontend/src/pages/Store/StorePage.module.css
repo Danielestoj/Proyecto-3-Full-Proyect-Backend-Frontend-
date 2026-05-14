@@ -95,8 +95,19 @@
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-
   gap: 10px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
+.salePrice{
+  color:#d60000;
+  font-size:24px;
+  font-weight:700;
 }
 
 .slider {

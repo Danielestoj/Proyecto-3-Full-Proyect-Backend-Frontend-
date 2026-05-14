@@ -16,6 +16,7 @@
 
 .nav a {
   margin: 0 1rem;
+  font-size: 1.5rem;
   color: var(--text);
   text-decoration: none;
   transition: var(--transition);
@@ -54,6 +55,7 @@
 
 /* Botón de salir */
 .logoutBtn {
+  all: unset;
   background: #ff4d4d;
   color: white;
   border: none;

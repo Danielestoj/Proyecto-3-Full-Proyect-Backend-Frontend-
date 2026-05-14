@@ -33,32 +33,62 @@ export const getDashboard = async (req, res, next) => {
       })
     ])
 
-    const totalValue = products.reduce((sum, p) => {
-      const stock = p.variants?.reduce((s, v) => s + v.stock, 0) || 0
-      return sum + stock
-    }, 0)
-
-    const lowStockProducts = products.filter(p =>
-      p.variants?.some(v => v.stock <= v.minStock)
-    )
-
+    // -----------------------------
+    // TOTAL PRODUCTS
+    // -----------------------------
     const totalProducts = products.length
 
-    const totalStock = products.reduce((sum, p) => {
-      return (
-        sum +
-        (p.variants?.reduce((s, v) => s + v.stock, 0) || 0)
-      )
+    // -----------------------------
+    // TOTAL STOCK (VARIANTS)
+    // -----------------------------
+    const totalStock = products.reduce((sum, product) => {
+      const productStock = (product.variants || []).reduce((acc, v) => {
+        return acc + (Number(v.stock) || 0)
+      }, 0)
+
+      return sum + productStock
     }, 0)
 
+    // -----------------------------
+    // TOTAL VALUE (VARIANTS)
+    // -----------------------------
+    const totalValue = products.reduce((sum, product) => {
+      const productValue = (product.variants || []).reduce((acc, v) => {
+        const stock = Number(v.stock) || 0
+        const price = Number(v.sellingPrice) || 0
+        return acc + stock * price
+      }, 0)
+
+      return sum + productValue
+    }, 0)
+
+    // -----------------------------
+    // LOW STOCK (VARIANT LEVEL)
+    // -----------------------------
+    const lowStockProducts = products
+      .map(product => {
+        const lowVariants = (product.variants || []).filter(
+          v => Number(v.stock) <= Number(v.minStock)
+        )
+
+        return {
+          ...product,
+          variants: lowVariants
+        }
+      })
+      .filter(product => product.variants.length > 0)
+
+    const lowStockCount = lowStockProducts.length
+
     res.json({
-      totalValue,
       totalProducts,
       totalStock,
-      lowStockCount: lowStockProducts.length,
+      totalValue,
+      lowStockCount,
       lowStockProducts,
       recentMovements
     })
+
   } catch (err) {
     console.error('DASHBOARD ERROR:', err)
     next(err)

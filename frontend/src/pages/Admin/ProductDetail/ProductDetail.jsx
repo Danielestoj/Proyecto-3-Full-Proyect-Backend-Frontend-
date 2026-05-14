@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext.jsx'
 import API_URL from '../../../config/api.js'
 import styles from './ProductDetail.module.css'
@@ -7,6 +7,7 @@ import styles from './ProductDetail.module.css'
 export default function ProductDetail() {
   const { id } = useParams()
   const { user: usuario } = useAuth()
+  const navigate = useNavigate()
 
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -25,6 +26,8 @@ export default function ProductDetail() {
   const [msg, setMsg] = useState(null)
   const [msgType, setMsgType] = useState('success')
   const [submitting, setSubmitting] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const canManage = ['MANAGER', 'ADMIN'].includes(usuario?.role?.toUpperCase())
 
@@ -62,41 +65,74 @@ export default function ProductDetail() {
       compareAtPrice: selectedVariant.compareAtPrice || '',
       salePrice: selectedVariant.salePrice || '',
 
-      stock: selectedVariant.stock || 0,
-      reservedStock: selectedVariant.reservedStock || 0,
-      minStock: selectedVariant.minStock || 0,
-      deliveryTime: selectedVariant.deliveryTime || 0,
-
-      imageUrl: selectedVariant.imageUrl || '',
+      stock: selectedVariant.stock ?? 0,
+      reservedStock: selectedVariant.reservedStock ?? 0,
+      minStock: selectedVariant.minStock ?? 0,
+      deliveryTime: selectedVariant.deliveryTime ?? 0,
     })
   }, [selectedVariant])
+
+  const handleDelete = async () => {
+    try {
+      setDeleting(true)
+
+      const token = localStorage.getItem('token')
+
+      const res = await fetch(`${API_URL}/api/products/${product.id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!res.ok) {
+        throw new Error('Error eliminando producto')
+      }
+
+      navigate('/admin/products')
+    } catch (err) {
+      console.error(err)
+      alert('No se pudo eliminar el producto')
+    } finally {
+      setDeleting(false)
+      setShowDeleteModal(false)
+    }
+  }
 
   const handleSave = async () => {
     const token = localStorage.getItem('token')
 
-    const res = await fetch(`${API_URL}/api/variants/${selectedVariant.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        ...editForm,
-        supplierPrice: Number(editForm.supplierPrice),
-        retailPrice: Number(editForm.retailPrice),
-        sellingPrice: Number(editForm.sellingPrice),
-        compareAtPrice: Number(editForm.compareAtPrice),
-        salePrice: editForm.salePrice ? Number(editForm.salePrice) : null,
-        stock: Number(editForm.stock),
-        reservedStock: Number(editForm.reservedStock),
-        minStock: Number(editForm.minStock),
-        deliveryTime: Number(editForm.deliveryTime),
-      }),
-    })
+    const res = await fetch(
+      `${API_URL}/api/products/variants/${selectedVariant.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...editForm,
+
+          supplierPrice: Number(editForm.supplierPrice),
+          retailPrice: Number(editForm.retailPrice),
+          sellingPrice: Number(editForm.sellingPrice),
+          compareAtPrice: Number(editForm.compareAtPrice),
+
+          salePrice:
+            editForm.salePrice === ''
+              ? null
+              : Number(editForm.salePrice),
+
+          stock: Number(editForm.stock),
+          reservedStock: Number(editForm.reservedStock),
+          minStock: Number(editForm.minStock),
+          deliveryTime: Number(editForm.deliveryTime),
+        }),
+      }
+    )
 
     if (!res.ok) {
-      setMsgType('error')
-      setMsg('Error al guardar variante')
+      console.error(await res.text())
       return
     }
 
@@ -233,6 +269,45 @@ export default function ProductDetail() {
         <button className={styles.saveBtn} onClick={handleSave}>
           Guardar cambios
         </button>
+      )}
+      {/* MODAL */}
+      {canManage && (
+        <button
+          className={styles.deleteBtn}
+          onClick={() => setShowDeleteModal(true)}
+        >
+          🗑 Eliminar producto
+        </button>
+      )}
+
+      {showDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h2>¿Seguro que quieres borrar este producto?</h2>
+
+            <p>
+              Esta acción eliminará el producto y todas sus variantes.
+            </p>
+
+            <div className={styles.modalActions}>
+              <button
+                className={styles.cancelBtn}
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+              >
+                Cancelar
+              </button>
+
+              <button
+                className={styles.confirmDeleteBtn}
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? 'Eliminando...' : 'Aceptar'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </main>
   )

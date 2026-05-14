@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router-dom";
 import API_URL from "../../config/api.js";
 import styles from "./Offers.module.css";
 
 export default function Offers() {
   const { addToCart } = useCart();
-
+  const navigate = useNavigate();
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -75,7 +76,10 @@ export default function Offers() {
           );
 
           return (
-            <div key={variant.id} className={styles.card}>
+            <div key={variant.id} className={styles.card}                 
+              onClick={() =>
+                navigate(`/product/${variant.id}`)
+              }>
               <img
                 src={variant.images?.[0]?.url || "/placeholder.jpg"}
                 alt={`${variant.productName} ${variant.name}`}

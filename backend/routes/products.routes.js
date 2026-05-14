@@ -1,4 +1,6 @@
 import { Router } from 'express'
+import prisma from '../lib/prisma.js'
+
 import {
   getProducts,
   getProduct,
@@ -6,7 +8,7 @@ import {
   updateProduct,
   deleteProduct,
   addMovement,
-  getMovements,
+  getMovements
 } from '../controllers/products.controller.js'
 
 import { verifyToken, requireRole } from '../middleware/auth.js'
@@ -17,34 +19,28 @@ import {
   movementSchema
 } from '../schemas/product.schema.js'
 
-import prisma from '../lib/prisma.js'
-
 const router = Router()
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIC ROUTES (CATALOG)
+| PUBLIC ROUTES
 |--------------------------------------------------------------------------
 */
 
-// 🔓 Público: listado de productos (CATÁLOGO)
+// 🔓 Listado de productos
 router.get('/', getProducts)
 
-// 🔓 Público: productos destacados
+// 🔓 Productos destacados
 router.get('/featured', async (req, res) => {
   try {
     const products = await prisma.product.findMany({
       take: 4,
       include: {
         variants: {
-          include: {
-            images: true,
-          },
-          where: {
-            active: true,
-          },
-        },
-      },
+          include: { images: true },
+          where: { active: true }
+        }
+      }
     })
 
     res.json(products)
@@ -56,12 +52,63 @@ router.get('/featured', async (req, res) => {
   }
 })
 
-// 🔓 Público: detalle de producto
+// 🔓 Detalle de producto
 router.get('/:id', getProduct)
 
 /*
 |--------------------------------------------------------------------------
-| PRIVATE ROUTES (ADMIN / MANAGEMENT)
+| VARIANTS (EDITAR VARIANTE)
+|--------------------------------------------------------------------------
+*/
+
+// 🔥 ACTUALIZAR VARIANTE
+router.put('/variants/:id', async (req, res, next) => {
+  try {
+    const {
+      imageUrl, // ❌ ignorado (no existe en Prisma)
+      stock,
+      reservedStock,
+      minStock,
+      supplierPrice,
+      retailPrice,
+      sellingPrice,
+      compareAtPrice,
+      salePrice,
+      deliveryTime,
+      ...rest
+    } = req.body
+
+    const variant = await prisma.productVariant.update({
+      where: { id: Number(req.params.id) },
+      data: {
+        ...rest,
+
+        // números seguros (evita undefined)
+        ...(stock !== undefined && { stock: Number(stock) }),
+        ...(reservedStock !== undefined && { reservedStock: Number(reservedStock) }),
+        ...(minStock !== undefined && { minStock: Number(minStock) }),
+        ...(deliveryTime !== undefined && { deliveryTime: Number(deliveryTime) }),
+
+        ...(supplierPrice !== undefined && { supplierPrice: Number(supplierPrice) }),
+        ...(retailPrice !== undefined && { retailPrice: Number(retailPrice) }),
+        ...(sellingPrice !== undefined && { sellingPrice: Number(sellingPrice) }),
+        ...(compareAtPrice !== undefined && { compareAtPrice: Number(compareAtPrice) }),
+
+        ...(salePrice !== undefined
+          ? { salePrice: salePrice === null ? null : Number(salePrice) }
+          : {}),
+      },
+    })
+
+    res.json(variant)
+  } catch (err) {
+    next(err)
+  }
+})
+
+/*
+|--------------------------------------------------------------------------
+| admin ROUTES
 |--------------------------------------------------------------------------
 */
 
@@ -69,7 +116,7 @@ router.get('/:id', getProduct)
 router.post(
   '/',
   verifyToken,
-  requireRole('MANAGER', 'ADMIN'),
+  requireRole('manager', 'admin'),
   validate(createProductSchema),
   createProduct
 )
@@ -78,24 +125,29 @@ router.post(
 router.put(
   '/:id',
   verifyToken,
-  requireRole('MANAGER', 'ADMIN'),
+  requireRole('manager', 'admin'),
   validate(updateProductSchema),
   updateProduct
 )
 
-// 🔒 Eliminar producto (solo admin)
+// 🔒 Eliminar producto
 router.delete(
   '/:id',
   verifyToken,
-  requireRole('ADMIN'),
+  requireRole('admin'),
   deleteProduct
 )
 
-// 🔒 Movimientos de stock
+/*
+|--------------------------------------------------------------------------
+| STOCK MOVEMENTS
+|--------------------------------------------------------------------------
+*/
+
 router.post(
   '/:id/movements',
   verifyToken,
-  requireRole('MANAGER', 'ADMIN'),
+  requireRole('manager', 'admin'),
   validate(movementSchema),
   addMovement
 )

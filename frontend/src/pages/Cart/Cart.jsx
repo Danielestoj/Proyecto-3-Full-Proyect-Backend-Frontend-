@@ -28,7 +28,7 @@ export default function Cart() {
             const hasOffer = item.offerPrice !== undefined;
 
             return (
-              <div key={item.id} className={styles.item}>
+              <div key={`${item.productId}-${item.variantId}`} className={styles.item}>
                 <img src={item.image} alt={item.name} className={styles.image} />
 
                 <div className={styles.info}>
@@ -42,18 +42,22 @@ export default function Cart() {
                   ) : (
                     <p className={styles.price}>{item.price}€</p>
                   )}
-
-                  {/* 🔥 Controles de cantidad */}
-                  <div className={styles.qtyControls}>
-                    <button onClick={() => decreaseQty(item.id)}>-</button>
-                    <span>{item.qty}</span>
-                    <button onClick={() => increaseQty(item.id)}>+</button>
-                  </div>
+                </div>
+                {/* 🔥 Controles de cantidad */}
+                <div className={styles.qtyControls}>
+                  <button onClick={() => decreaseQty(item.id)}>-</button>
+                  <span>{item.qty}</span>
+                  <button onClick={() => increaseQty(item.id)}>+</button>
                 </div>
 
                 <button
                   className={styles.remove}
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() =>
+                    removeFromCart({
+                      productId: item.productId,
+                      variantId: item.variantId
+                    })
+                  }
                 >
                   Eliminar
                 </button>

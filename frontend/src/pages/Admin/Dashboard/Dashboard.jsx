@@ -56,19 +56,29 @@ export default function Dashboard() {
       {data.lowStockProducts?.length > 0 && (
         <section className={styles.section}>
           <h2>⚠️ Productos con stock bajo</h2>
+
           <ul className={styles.list}>
-            {data.lowStockProducts.map(p => (
-              <li key={p.id} className={`${styles.item} ${styles.alert}`}>
+            {data.lowStockProducts.map(product => (
+              <li key={product.id} className={`${styles.item} ${styles.alert}`}>
+                
                 <div>
-                  <Link to={`/products/${p.id}`} className={styles.productName}>
-                    {p.name}
+                  <Link to={`/admin/products/${product.id}`} className={styles.productName}>
+                    {product.name}
                   </Link>
-                  <span className={styles.sku}>{p.sku}</span>
+
+                  <span className={styles.sku}>
+                    {product.sku}
+                  </span>
                 </div>
 
-                <span className={styles.stockBadge}>
-                  Stock: {p.stock} / Mínimo: {p.minStock}
-                </span>
+                <div className={styles.stockBadge}>
+                  {product.variants.map(v => (
+                    <div key={v.id}>
+                      Stock: {v.stock} / Mínimo: {v.minStock}
+                    </div>
+                  ))}
+                </div>
+
               </li>
             ))}
           </ul>

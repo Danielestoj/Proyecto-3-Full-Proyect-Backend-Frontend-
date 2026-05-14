@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import API_URL from "../../config/api"
 import styles from "./StorePage.module.css"
 
 export default function StorePage() {
   const [products, setProducts] = useState([])
   const [filtered, setFiltered] = useState([])
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  const categoryParam = searchParams.get("category") || ""
+
 
   const [search, setSearch] = useState("")
-  const [category, setCategory] = useState("")
+  const [category, setCategory] = useState(categoryParam)
   const [price, setPrice] = useState(300)
 
   // 🔹 FETCH PRODUCTS
@@ -133,6 +139,9 @@ export default function StorePage() {
             <div
                 key={variant.id}
                 className={styles.card}
+                onClick={() =>
+                  navigate(`/product/${product.id}`)
+                }
             >
                 <img
                 src={
@@ -155,32 +164,11 @@ export default function StorePage() {
                     {variant?.name}
                 </p>
 
-                {/* EXTRA INFO */}
-                <div className={styles.meta}>
-
-                    {variant.language && (
-                    <span>{variant.language}</span>
-                    )}
-
-                    {variant.condition && (
-                    <span>{variant.condition}</span>
-                    )}
-
-                    {variant.isFoil && (
-                    <span>Foil</span>
-                    )}
-
-                    {variant.isFirstEdition && (
-                    <span>1ª Edición</span>
-                    )}
-
-                </div>
-
-                <strong className={styles.price}>
-                    €
-                    {Number(
-                    variant?.sellingPrice || 0
-                    ).toFixed(2)}
+                <strong className={variant?.salePrice != null
+                  ? styles.salePrice : styles.price}>
+                    {Number(variant?.salePrice ?? 
+                      variant?.sellingPrice ??
+                       0).toFixed(2)} €
                 </strong>
 
                 </div>

@@ -42,3 +42,44 @@
     Cómo estructurar correctamente los Providers para evitar contextos rotos.
     Cómo convertir componentes estáticos en dinámicos basados en datos.
     Buenas prácticas de CSS Modules y debugging de estilos.
+
+## 2026-05-14 — Refactor de creación de productos + validación backend + UX de inventario + debugging de Prisma/Zod
+**Herramienta**: ChatGPT
+**Contexto**: Se estaba evolucionando el sistema de creación de productos para adaptarlo a un nuevo modelo de datos basado en Product + ProductVariant en Prisma, con validación estricta mediante Zod en el backend. El flujo anterior enviaba datos planos y generaba errores de validación (“Required” y 400/403), además de inconsistencias entre frontend y esquema de base de datos.
+**Prompt usado:**
+    "ayuda con creación de producto con estructura nueva de variantes..."
+    "añadir creación de categoría desde el formulario..."
+    "modificar ProductDetail para añadir eliminación con modal..."
+    "añadir buscador y filtros en listado de productos..."
+
+**Problemas principales del día:**
+    Error 400 Bad Request (Zod validation) al crear productos.
+    Campos numéricos enviados como NaN o undefined.
+    categoryId inválido al usar opción “nueva categoría”.
+    Falta de sincronización entre frontend y createProductSchema.
+    Confusión entre proveedor como string vs relación Supplier en Prisma.
+    UX incompleta en listado de productos (sin filtros ni ordenación).
+    Botones de carrito desalineados por estilos globales heredados.
+**Qué se obtuvo:**
+    ProductNew.jsx completamente refactorizado con:
+    Limpieza de datos antes de enviar (toNumber)
+    Manejo correcto de categorías nuevas
+    Estructura correcta de variants[]
+    Prevención de NaN en precios y stock
+    Lógica de backend correctamente respetada (Zod + Prisma).
+    Modal de confirmación para eliminación de productos.
+    Mejora de UX en carrito (alineación de controles + corrección CSS).
+    Base funcional para filtro de productos por categoría, proveedor y stock.
+**Qué modificó o descartó:**
+    Eliminación del envío de null en categoryId → reemplazado por undefined.
+    Eliminación de datos no compatibles con Prisma en Product (ej: imageUrl directo en product).
+    Ajuste de estructura mental: proveedor pasa a ser relación Supplier (no string libre en DB).
+    Reescritura de lógica de precios para evitar errores de validación.
+    Corrección de estilos globales que afectaban botones del carrito.
+**Tiempo con IA:** ~6h–7h | **Tiempo sin IA (estimado)**: ~10–14h
+**Aprendizaje:**
+    Cómo Zod y Prisma fuerzan consistencia estricta en el backend y cómo eso impacta el frontend.
+    Importancia de normalizar datos antes de enviarlos (evitar NaN, undefined, strings vacíos).
+    Diferencia real entre “campo opcional en UI” vs “campo requerido en backend”.
+    Cómo diseñar formularios complejos con estructuras anidadas (Product → Variants).
+    Mejora de UX en sistemas CRUD (categorías dinámicas, confirmaciones de borrado, filtros avanzados).

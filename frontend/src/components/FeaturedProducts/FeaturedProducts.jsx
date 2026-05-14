@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router-dom"
 import API_URL from "../../config/api.js";
 import styles from "./FeaturedProducts.module.css";
 
 export default function FeaturedProducts() {
   const { addToCart } = useCart();
+  const navigate = useNavigate()
 
   const [featured, setFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,10 @@ export default function FeaturedProducts() {
           if (!variant) return null;
 
           return (
-            <div key={variant.id} className={styles.card}>
+            <div key={variant.id} className={styles.card}
+                onClick={() =>
+                  navigate(`/product/${product.id}`)
+                }>
               <img
                 src={variant.images?.[0]?.url || "/placeholder.jpg"}
                 alt={`${product.name} ${variant.name}`}

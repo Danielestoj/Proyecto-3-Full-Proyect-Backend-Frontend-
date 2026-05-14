@@ -68,11 +68,125 @@ export const getProduct = async (req, res, next) => {
   }
 }
 
+export const getProductById = async (req, res) => {
+
+  try {
+
+    const product = await prisma.product.findUnique({
+      where: {
+        id: Number(req.params.id)
+      },
+      include: {
+        category: true,
+        variants: true
+      }
+    })
+
+    res.json(product)
+
+  } catch (error) {
+
+    console.error(error)
+
+    res.status(500).json({
+      error: "Error getting product"
+    })
+
+  }
+
+}
+
 export const createProduct = async (req, res, next) => {
   try {
-    const product = await prisma.product.create({ data: req.body, include })
+    const {
+      name,
+      description,
+      categoryId,
+      supplier,
+      variants
+    } = req.body
+
+    // 🔥 Crear o reutilizar proveedor
+    let supplierRecord = null
+
+    if (supplier?.trim()) {
+      supplierRecord = await prisma.supplier.upsert({
+        where: {
+          name: supplier.trim()
+        },
+        update: {},
+        create: {
+          name: supplier.trim()
+        }
+      })
+    }
+
+    const product = await prisma.product.create({
+      data: {
+        name,
+        slug: name.toLowerCase().replace(/\s+/g, '-'),
+
+        description,
+
+        categoryId,
+
+        supplierId: supplierRecord?.id || null,
+
+        variants: {
+          create: variants.map(v => ({
+            name: v.name,
+            sku: v.sku,
+
+            language: v.language,
+            condition: v.condition,
+
+            isFoil: v.isFoil,
+            isFirstEdition: v.isFirstEdition,
+
+            availability: v.availability,
+
+            stock: v.stock,
+            reservedStock: v.reservedStock,
+            minStock: v.minStock,
+
+            supplierReference: v.supplierReference,
+
+            supplierPrice: v.supplierPrice,
+            retailPrice: v.retailPrice,
+            sellingPrice: v.sellingPrice,
+            compareAtPrice: v.compareAtPrice,
+            salePrice: v.salePrice,
+
+            deliveryTime: v.deliveryTime,
+
+            images: v.imageUrl
+              ? {
+                  create: [
+                    {
+                      url: v.imageUrl
+                    }
+                  ]
+                }
+              : undefined
+          }))
+        }
+      },
+
+      include: {
+        supplier: true,
+        category: true,
+        variants: {
+          include: {
+            images: true
+          }
+        }
+      }
+    })
+
     res.status(201).json(product)
+
   } catch (err) {
+    console.error(err)
     next(err)
   }
 }
@@ -105,20 +219,26 @@ export const addMovement = async (req, res, next) => {
     const productId = Number(req.params.id)
     const { type, quantity, reason } = req.body
 
-    const product = await prisma.product.findUniqueOrThrow({ where: { id: productId } })
+    const product = await prisma.product.findUniqueOrThrow({ 
+      where: { id: productId } })
 
     if (type === 'OUT' && product.stock < quantity) {
-      return res.status(400).json({ error: `Stock insuficiente. Disponible: ${product.stock}` })
+      return res.status(400).json({ 
+        error: `Stock insuficiente. Disponible: ${product.stock}` })
     }
 
-    const newStock = type === 'IN' ? product.stock + quantity : product.stock - quantity
+    const newStock = type === 'IN' 
+    ? product.stock + quantity : product.stock - quantity
 
     const [movement] = await prisma.$transaction([
       prisma.stockMovement.create({
         data: { productId, type, quantity, reason, userId: req.user.id },
         include: { user: { select: { name: true } } },
       }),
-      prisma.product.update({ where: { id: productId }, data: { stock: newStock } }),
+      prisma.product.update({ where: { 
+        id: productId }, 
+        data: { 
+          stock: newStock } }),
     ])
 
     if (newStock <= product.minStock && process.env.WEBHOOK_URL) {
@@ -135,7 +255,8 @@ export const addMovement = async (req, res, next) => {
       }).catch(() => {})
     }
 
-    const updatedProduct = await prisma.product.findUnique({ where: { id: productId }, include })
+    const updatedProduct = await prisma.product.findUnique({ where: { 
+      id: productId }, include })
     res.status(201).json({ movement, product: updatedProduct })
   } catch (err) {
     next(err)

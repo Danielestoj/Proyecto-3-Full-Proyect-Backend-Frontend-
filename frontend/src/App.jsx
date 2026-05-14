@@ -9,6 +9,8 @@ import FeaturedProducts from "./components/FeaturedProducts/FeaturedProducts";
 import Offers from "./components/Offers/Offers";
 import Footer from "./components/Footer/Footer";
 import StorePage from "./pages/Store/StorePage";
+import ProductPage from "./pages/Product/ProductPage";
+import OffersPage from "./pages/OffersPage/OffersPage"
 
 // 🔐 Rutas protegidas
 import ProtectedRoute from "./router/ProtectedRoute";
@@ -17,7 +19,7 @@ import ProtectedRoute from "./router/ProtectedRoute";
 import Dashboard from "./pages/Admin/Dashboard/Dashboard";
 import ProductList from "./pages/Admin/ProductList/ProductList";
 import ProductDetail from "./pages/Admin/ProductDetail/ProductDetail";
-import ProductNew from "./pages/Admin/ProductNew";
+import ProductNew from "./pages/Admin/ProductNew/ProductNew";
 import Login from "./pages/Admin/Login";
 import Register from "./pages/Admin/Register";
 
@@ -50,6 +52,13 @@ export default function App() {
         />
         {/* 🛍️ TIENDA */}
         <Route path="/tienda" element={<StorePage />} />
+
+        {/* 🏷️ OFERTAS */}
+        <Route path="/ofertas" element={<OffersPage />} />
+
+        {/* 🛒 PRODUCTO */}
+        <Route path="/product/:id" element={<ProductPage />} />
+        
 
         {/* 🔐 LOGIN / REGISTER */}
         <Route path="/login" element={<Login />} />
