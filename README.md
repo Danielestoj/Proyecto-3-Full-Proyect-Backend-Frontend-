@@ -31,6 +31,11 @@ El proyecto cumple todos los requisitos del enunciado, incluyendo:
 
     Deploy completo
 
+## Despliegue Online
+**Vercel**: https://proyecto-3-full-proyect-backend-fro.vercel.app/
+
+Conectado a través de Railway
+
 ## Integración externa: EmailJS
 El proyecto incluye una integración externa mediante EmailJS, usada para enviar un email automático cuando un usuario se suscribe al newsletter desde el footer.
 
