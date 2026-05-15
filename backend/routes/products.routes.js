@@ -20,7 +20,7 @@ import {
 } from '../schemas/product.schema.js'
 
 const router = Router()
-
+console.log("📦 PRODUCTS ROUTES CARGADO")
 /*
 |--------------------------------------------------------------------------
 | PUBLIC ROUTES

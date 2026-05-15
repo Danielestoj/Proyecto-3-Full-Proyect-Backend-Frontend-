@@ -8,7 +8,7 @@ import errorHandler from './middleware/errorHandler.js'
 import suppliersRoutes from './routes/suppliers.routes.js'
 
 const app = express()
-
+console.log("🔥 APP.JS CARGADO")
 app.use(cors())
 app.use(express.json())
 
