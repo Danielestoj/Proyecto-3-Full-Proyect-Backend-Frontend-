@@ -22,6 +22,8 @@ import ProductDetail from "./pages/Admin/ProductDetail/ProductDetail";
 import ProductNew from "./pages/Admin/ProductNew/ProductNew";
 import Login from "./pages/Admin/Login";
 import Register from "./pages/Admin/Register";
+import CategoryNew from "./pages/Admin/CategoryNew/CategoryNew";
+import SupplierNew from "./pages/Admin/SupplierNew/SupplierNew";
 
 // 🛒 Carrito
 import Cart from "./pages/Cart/Cart";
@@ -103,6 +105,25 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route 
+          path="/admin/products/newCategory" 
+          element={
+            <ProtectedRoute roles={["admin", "manager"]}>
+              <CategoryNew /> 
+            </ProtectedRoute>
+          }
+        />
+
+        <Route 
+        path="/admin/products/newSupplier" 
+        element={
+          <ProtectedRoute roles={["admin", "manager"]}>
+            <SupplierNew />
+          </ProtectedRoute>
+        } 
+        />
+
 
       </Routes>
     </>

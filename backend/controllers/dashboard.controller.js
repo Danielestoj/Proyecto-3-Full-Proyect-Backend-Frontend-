@@ -25,9 +25,7 @@ export const getDashboard = async (req, res, next) => {
             }
           },
           user: {
-            select: {
-              name: true
-            }
+            select: { name: true }
           }
         }
       })
@@ -42,24 +40,16 @@ export const getDashboard = async (req, res, next) => {
     // TOTAL STOCK (VARIANTS)
     // -----------------------------
     const totalStock = products.reduce((sum, product) => {
-      const productStock = (product.variants || []).reduce((acc, v) => {
-        return acc + (Number(v.stock) || 0)
-      }, 0)
-
-      return sum + productStock
+      return sum + product.variants.reduce((acc, v) => acc + v.stock, 0)
     }, 0)
 
     // -----------------------------
     // TOTAL VALUE (VARIANTS)
     // -----------------------------
     const totalValue = products.reduce((sum, product) => {
-      const productValue = (product.variants || []).reduce((acc, v) => {
-        const stock = Number(v.stock) || 0
-        const price = Number(v.sellingPrice) || 0
-        return acc + stock * price
+      return sum + product.variants.reduce((acc, v) => {
+        return acc + v.stock * Number(v.sellingPrice || 0)
       }, 0)
-
-      return sum + productValue
     }, 0)
 
     // -----------------------------
@@ -67,16 +57,19 @@ export const getDashboard = async (req, res, next) => {
     // -----------------------------
     const lowStockProducts = products
       .map(product => {
-        const lowVariants = (product.variants || []).filter(
-          v => Number(v.stock) <= Number(v.minStock)
+        const lowVariants = product.variants.filter(
+          v => v.stock <= v.minStock
         )
 
-        return {
-          ...product,
-          variants: lowVariants
-        }
+        return lowVariants.length > 0
+          ? {
+              id: product.id,
+              name: product.name,
+              variants: lowVariants
+            }
+          : null
       })
-      .filter(product => product.variants.length > 0)
+      .filter(Boolean)
 
     const lowStockCount = lowStockProducts.length
 

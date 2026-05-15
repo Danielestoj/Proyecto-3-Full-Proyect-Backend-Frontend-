@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API_URL from '../../../config/api.js'
@@ -9,13 +10,13 @@ export default function ProductNew() {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [newCategory, setNewCategory] = useState('')
+  const [suppliers, setSuppliers] = useState([])
 
   const [form, setForm] = useState({
     name: '',
     description: '',
     categoryId: '',
-    supplier: '',
+    supplierId: '',
 
     variantName: '',
     sku: '',
@@ -41,6 +42,17 @@ export default function ProductNew() {
   })
 
   useEffect(() => {
+  const token = localStorage.getItem('token')
+
+  fetch(`${API_URL}/api/suppliers`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(data => setSuppliers(Array.isArray(data) ? data : []))
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
     const token = localStorage.getItem('token')
 
     fetch(`${API_URL}/api/categories`, {
@@ -60,7 +72,6 @@ export default function ProductNew() {
     }))
   }
 
-  // 🔥 FIX: convierte números de forma segura
   const toNumber = (v) =>
     v === '' || v === null || v === undefined ? null : Number(v)
 
@@ -81,14 +92,8 @@ export default function ProductNew() {
         body: JSON.stringify({
           name: form.name,
           description: form.description || null,
-
-          // ⚠️ IMPORTANTE: si es "new", NO envíes null
-          categoryId:
-            form.categoryId === 'new'
-              ? undefined
-              : Number(form.categoryId),
-
-          supplier: form.supplier || null,
+          categoryId: Number(form.categoryId),
+          supplierId: Number(form.supplierId),
 
           variants: [
             {
@@ -100,11 +105,11 @@ export default function ProductNew() {
               condition: form.condition || null,
               isFoil: form.isFoil,
               isFirstEdition: form.isFirstEdition,
-              availability: form.availability,
+              availability: form.availability|| 'IN_STOCK',
 
-              supplierPrice: toNumber(form.supplierPrice) ?? 0,
-              retailPrice: toNumber(form.retailPrice) ?? 0,
-              sellingPrice: toNumber(form.sellingPrice) ?? 0,
+              supplierPrice: toNumber(form.supplierPrice),
+              retailPrice: toNumber(form.retailPrice),
+              sellingPrice: toNumber(form.sellingPrice),
               compareAtPrice: toNumber(form.compareAtPrice),
               salePrice: toNumber(form.salePrice),
 
@@ -115,12 +120,14 @@ export default function ProductNew() {
               supplierReference: form.supplierReference || null,
               deliveryTime: toNumber(form.deliveryTime) ?? 0
             }
-          ],
-
-          // 👇 solo útil si tu backend lo soporta
-          newCategory: form.categoryId === 'new' ? newCategory : null
+          ]
         })
       })
+      console.log("FORM DATA:", form)
+      console.log("supplierPrice:", toNumber(form.supplierPrice))
+      console.log("retailPrice:", toNumber(form.retailPrice))
+      console.log("sellingPrice:", toNumber(form.sellingPrice))
+
 
       const data = await res.json()
 
@@ -156,8 +163,22 @@ export default function ProductNew() {
         </label>
 
         <label>Proveedor
-          <input name="supplier" value={form.supplier} onChange={handleChange} />
+          <select
+            name="supplierId"
+            value={form.supplierId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Seleccionar...</option>
+
+            {suppliers.map(s => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
         </label>
+
 
         <label>Categoría
           <select
@@ -173,10 +194,9 @@ export default function ProductNew() {
                 {c.name}
               </option>
             ))}
-
-            <option value="new">+ Nueva categoría</option>
           </select>
         </label>
+
 
         {form.categoryId === 'new' && (
           <label>
@@ -264,6 +284,21 @@ export default function ProductNew() {
             <input type="number" name="deliveryTime" value={form.deliveryTime} onChange={handleChange} />
           </label>
         </div>
+
+        <label>Disponibilidad
+        <select
+          name="availability"
+          value={form.availability}
+          onChange={handleChange}
+          required
+        >
+          <option value="IN_STOCK">En stock</option>
+          <option value="OUT_OF_STOCK">Agotado</option>
+          <option value="PREORDER">Preventa</option>
+          <option value="DISCONTINUED">Descatalogado</option>
+        </select>
+      </label>
+
 
         <button type="submit" disabled={loading}>
           {loading ? 'Creando...' : 'Crear producto'}

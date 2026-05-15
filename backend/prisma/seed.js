@@ -353,7 +353,7 @@ async function main() {
 
   const pokemonVariant = await prisma.productVariant.findUnique({
     where: {
-      sku: 'PKMN-ETB-ESP'
+      sku: 'PKMN-ETB-HA-ESP'
     }
   });
 

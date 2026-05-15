@@ -34,15 +34,17 @@ export default function ProductList() {
 
         setProducts(safe)
 
-        // 🔥 APLANAR VARIANTES
+        // 🔥 APLANAR VARIANTES (CORREGIDO)
         const flat = safe.flatMap(product =>
-          (product.variants || []).map(variant => ({
-            productId: product.id,
-            productName: product.name,
-            category: product.category,
-            supplier: product.supplier,
-            ...variant
-          }))
+          (product.variants || [])
+            .filter(v => !lowStockOnly || v.stock <= v.minStock)
+            .map(variant => ({
+              productId: product.id,
+              productName: product.name,
+              category: product.category,
+              supplier: product.supplier,
+              ...variant
+            }))
         )
 
         setRows(flat)
