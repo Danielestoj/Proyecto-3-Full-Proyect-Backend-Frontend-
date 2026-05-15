@@ -41,3 +41,101 @@
 .newsletter button:hover {
   background: var(--primary-hover);
 }
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .footer {
+    padding: 1.8rem;
+  }
+
+  .links a,
+  .social a {
+    margin: 0 0.4rem;
+  }
+
+  .newsletter input {
+    width: 250px;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  .footer {
+    padding: 1.5rem;
+  }
+
+  /* Links en varias líneas */
+  .links,
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+
+  /* Newsletter más compacto */
+  .newsletter {
+    margin-top: 1.2rem;
+  }
+
+  .newsletter input {
+    width: 70%;
+    margin-right: 0.4rem;
+  }
+
+  .newsletter button {
+    padding: 0.5rem 0.9rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+
+  .footer {
+    padding: 1.2rem;
+  }
+
+  /* Links en columna */
+  .links,
+  .social {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .links a,
+  .social a {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  /* Newsletter full width */
+  .newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+
+  .newsletter input {
+    width: 100%;
+    margin: 0;
+    padding: 0.6rem;
+  }
+
+  .newsletter button {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 1rem;
+  }
+}

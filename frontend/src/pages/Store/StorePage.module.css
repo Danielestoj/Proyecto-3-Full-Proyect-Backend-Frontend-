@@ -115,3 +115,112 @@
   cursor: pointer;
   accent-color: #7c3aed;
 }
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .container {
+    padding: 15px;
+  }
+
+  .body {
+    grid-template-columns: 220px 1fr;
+    gap: 15px;
+  }
+
+  .products {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  .container {
+    padding: 12px;
+  }
+
+  /* Filtros arriba, productos abajo */
+  .body {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .filters {
+    width: 100%;
+    order: -1;
+  }
+
+  .products {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+  }
+
+  .card img {
+    height: 140px;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 90%;
+    padding: 10px;
+    margin-left:15px;
+  }
+
+  /* Filtros full width */
+  .filters {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .filters label {
+    font-size: 13px;
+  }
+
+  .filters input,
+  .filters select {
+    padding: 7px;
+    font-size: 14px;
+  }
+
+  /* Productos a 1 columna */
+  .products {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .card img {
+    height: 130px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .salePrice {
+    font-size: 20px;
+  }
+
+  .slider {
+    width: 100%;
+  }
+}

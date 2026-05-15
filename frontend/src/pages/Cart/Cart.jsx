@@ -45,9 +45,15 @@ export default function Cart() {
                 </div>
                 {/* 🔥 Controles de cantidad */}
                 <div className={styles.qtyControls}>
-                  <button onClick={() => decreaseQty(item.id)}>-</button>
+                  <button onClick={() => decreaseQty({
+                    productId: item.productId,
+                    variantId: item.variantId
+                  })}>-</button>
                   <span>{item.qty}</span>
-                  <button onClick={() => increaseQty(item.id)}>+</button>
+                  <button onClick={() => increaseQty({
+                    productId: item.productId,
+                    variantId: item.variantId
+                  })}>+</button>
                 </div>
 
                 <button

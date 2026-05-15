@@ -179,3 +179,136 @@
 .searchInput::placeholder {
   color: rgba(255,255,255,0.5);
 }
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .main {
+    width: 95%;
+  }
+
+  .searchInput {
+    min-width: 300px;
+  }
+
+  .header h1 {
+    font-size: 1.35rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  /* Header apilado */
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* Controles en columna */
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.8rem;
+  }
+
+  /* Buscador más flexible */
+  .searchContainer {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .searchSelect,
+  .searchInput {
+    width: 100%;
+    min-width: unset;
+  }
+
+  /* Botón nuevo full width */
+  .btnNew {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+
+  .main {
+    margin-left:30px;
+    width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  /* Header compacto */
+  .header {
+    gap: 0.7rem;
+  }
+
+  .header h1 {
+    font-size: 1.2rem;
+  }
+
+  /* Controles en columna */
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  /* Buscador full width */
+  .searchContainer {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .searchSelect,
+  .searchInput {
+    width: 100%;
+    min-width: unset;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.9rem;
+  }
+
+  /* Botón nuevo */
+  .btnNew {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  /* Tabla: scroll horizontal limpio */
+  .tableWrapper {
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .sku {
+    font-size: 0.75rem;
+  }
+
+  .badgeAlert,
+  .badgeOk {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+  }
+}

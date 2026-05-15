@@ -20,11 +20,18 @@ export function CartProvider({ children }) {
 
   const addToCart = (product) => {
     setCart((prev) => {
-      const exists = prev.find((p) => p.id === product.id);
+      const exists = prev.find(
+        (p) =>
+          p.productId === product.productId &&
+          p.variantId === product.variantId
+      );
 
       if (exists) {
         return prev.map((p) =>
-          p.id === product.id ? { ...p, qty: p.qty + 1 } : p
+          p.productId === product.productId &&
+          p.variantId === product.variantId
+            ? { ...p, qty: p.qty + 1 }
+            : p
         );
       }
 
@@ -32,29 +39,41 @@ export function CartProvider({ children }) {
     });
   };
 
-  const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((p) => p.id !== id));
+
+  const removeFromCart = ({ productId, variantId }) => {
+    setCart((prev) =>
+      prev.filter(
+        (p) =>
+          !(p.productId === productId && p.variantId === variantId)
+      )
+    );
   };
+
 
   const clearCart = () => setCart([]);
 
-  const increaseQty = (id) => {
-  setCart(prev =>
-    prev.map(item =>
-      item.id === id ? { ...item, qty: item.qty + 1 } : item
-    )
-  );
-};
+  const increaseQty = ({ productId, variantId }) => {
+    setCart(prev =>
+      prev.map(item =>
+        item.productId === productId && item.variantId === variantId
+          ? { ...item, qty: item.qty + 1 }
+          : item
+      )
+    );
+  };
 
-const decreaseQty = (id) => {
-  setCart(prev =>
-    prev.map(item =>
-      item.id === id && item.qty > 1
-        ? { ...item, qty: item.qty - 1 }
-        : item
-    )
-  );
-};
+  const decreaseQty = ({ productId, variantId }) => {
+    setCart(prev =>
+      prev.map(item =>
+        item.productId === productId &&
+        item.variantId === variantId &&
+        item.qty > 1
+          ? { ...item, qty: item.qty - 1 }
+          : item
+      )
+    );
+  };
+
 
 
   return (

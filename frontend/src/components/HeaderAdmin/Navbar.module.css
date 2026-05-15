@@ -104,3 +104,137 @@
   color: #000;
   font-weight: bold;
 }
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .nav {
+    padding: 0 1.5rem;
+  }
+
+  .links {
+    gap: 1.2rem;
+  }
+
+  .links a {
+    font-size: 1rem;
+  }
+
+  .brand {
+    font-size: 1.2rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  /* Header se apila en dos filas */
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  /* Links en varias líneas */
+  .links {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .links a {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* Botón + Nuevo se adapta */
+  .btnPrimary {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  /* Role + Logout juntos */
+  .roleTag {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .btnLogout {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+
+  /* Header totalmente vertical */
+  .nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 0.8rem;
+  }
+
+  .brand {
+    text-align: center;
+    width: 100%;
+    font-size: 1.2rem;
+  }
+
+  /* Links en columna */
+  .links {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.6rem;
+  }
+
+  .links a {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem;
+    background: rgba(255,255,255,0.15);
+    border-radius: 6px;
+    font-size: 0.95rem;
+  }
+
+  /* Botón + Nuevo full width */
+  .btnPrimary {
+    width: 100%;
+    text-align: center;
+    padding: 0.6rem;
+    font-size: 0.95rem;
+  }
+
+  /* Role + Logout en columna */
+  .roleTag {
+    width: 100%;
+    text-align: center;
+    padding: 0.4rem;
+  }
+
+  .btnLogout {
+    width: 100%;
+    text-align: center;
+    padding: 0.7rem;
+    font-size: 1rem;
+  }
+
+  /* Dropdown adaptado */
+  .dropdownMenu {
+    width: 200px;
+    margin: auto;
+   
+  }
+}
+

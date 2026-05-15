@@ -234,3 +234,169 @@
 .confirmDeleteBtn:hover {
   background: #e74c3c;
 }
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .main {
+    max-width: 90%;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .back {
+    width: 160px;
+    font-size: 0.95rem;
+  }
+
+  .editBtn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .variants button {
+    width: 90px;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+  .topBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .variants {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .variants button {
+    width: auto;
+    padding: 0.4rem 0.7rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .card {
+    padding: 0.8rem;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+  }
+
+  .card label {
+    font-size: 0.9rem;
+  }
+
+  .previewImage {
+    max-height: 150px;
+  }
+}
+
+
+/* ===========================
+   📌 500px — Móviles (FIX REAL)
+   =========================== */
+@media (max-width: 500px) {
+  .root{
+    all:unset;
+  }
+
+  /* El contenedor principal */
+  .main {
+    margin-left:30px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* La barra superior se apila */
+  .topBar {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.8rem;
+  }
+
+  /* Botón volver ocupa todo el ancho */
+  .back {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+
+  /* Botón editar también full width */
+  .editBtn {
+    width: 100%;
+    height: 40px;
+  }
+
+  /* Header apilado */
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  /* Variantes en columna */
+  .variants {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .variants button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Grid a 1 columna */
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Cards más compactas */
+  .card {
+    width: 475px;
+    padding: 0.8rem;
+  }
+
+  /* Imagen más pequeña */
+  .previewImage {
+    max-height: 130px;
+  }
+
+  /* Botones grandes */
+  .saveBtn,
+  .deleteBtn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  /* Modal responsive */
+  .modal {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  .modalActions {
+    flex-direction: column;
+  }
+}

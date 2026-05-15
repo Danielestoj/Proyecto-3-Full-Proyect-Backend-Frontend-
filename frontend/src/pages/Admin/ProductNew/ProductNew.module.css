@@ -85,3 +85,110 @@ button:hover {
   padding: 10px;
   border-radius: 8px;
 }
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .form {
+    padding: 1.5rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .row {
+    flex-direction: row;
+    gap: 0.8rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  .container {
+    padding: 1.5rem;
+  }
+
+  .form {
+    padding: 1.2rem;
+  }
+
+  /* Grid pasa a 2 columnas */
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+
+  /* Las filas se apilan si no caben */
+  .row {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .form h1 {
+    font-size: 1.4rem;
+  }
+
+  .form h2 {
+    font-size: 1rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+
+  .container {
+    margin-left: 30px;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .form {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  /* Grid a 1 columna */
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  /* Filas apiladas */
+  .row {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .form label {
+    font-size: 0.85rem;
+  }
+
+  .form input,
+  .form textarea,
+  .form select {
+    padding: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+  }
+
+  .error {
+    font-size: 0.85rem;
+    padding: 0.7rem;
+  }
+}

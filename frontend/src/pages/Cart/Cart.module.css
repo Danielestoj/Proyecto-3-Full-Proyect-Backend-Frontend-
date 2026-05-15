@@ -181,3 +181,141 @@
   font-weight: bold;
   color: white;
 }
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .wrapper {
+    width: 95%;
+  }
+
+  .container {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .item {
+    gap: 0.8rem;
+  }
+
+  .image {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  /* Grid pasa a 1 columna */
+  .container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .right {
+    order: 1; /* 🔥 El resumen sube arriba */
+  }
+
+  .item {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .qtyControls {
+    padding: 4px 8px;
+  }
+
+  .qtyControls button {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+
+  .wrapper {
+    width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .title {
+    text-align: center;
+  }
+
+  /* Cards del carrito en columna */
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.9rem;
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+    max-height: 180px;
+    object-fit: contain;
+  }
+
+  .info {
+    width: 100%;
+  }
+
+  /* Controles de cantidad */
+  .qtyControls {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.5rem;
+  }
+
+  .qtyControls button {
+    width: 30px;
+    height: 30px;
+  }
+
+  /* Botón eliminar */
+  .remove {
+    width: 100%;
+    padding: 0.7rem;
+    text-align: center;
+  }
+
+
+  /* Resumen */
+  .right {
+    padding: 1rem;
+  }
+
+  .summaryRow,
+  .totalRow {
+    font-size: 1rem;
+  }
+
+  .checkout {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .clear {
+    width: 100%;
+    padding: 0.8rem;
+  }
+}

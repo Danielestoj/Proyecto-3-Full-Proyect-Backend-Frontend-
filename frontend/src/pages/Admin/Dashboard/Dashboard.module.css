@@ -59,3 +59,124 @@
 .movMeta { font-size: 0.85rem; color: #888; }
 
 .center { text-align: center; margin-top: 5rem; color: #666; }
+
+
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .main {
+    max-width: 90%;
+  }
+
+  .statValue {
+    font-size: 1.7rem;
+  }
+
+  .item {
+    padding: 0.8rem 1rem;
+  }
+
+  .movMeta {
+    font-size: 0.8rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  .main h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat {
+    padding: 1.2rem;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+
+  .item > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .movMeta {
+    font-size: 0.78rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+  .main {
+    padding: 0 0.5rem;
+  }
+
+  .main h1 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat {
+    padding: 1rem;
+  }
+
+  .statValue {
+    font-size: 1.3rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .item {
+    padding: 0.8rem;
+  }
+
+  .productName {
+    font-size: 0.95rem;
+  }
+
+  .sku {
+    font-size: 0.7rem;
+  }
+
+  .stockBadge {
+    font-size: 0.8rem;
+  }
+
+  .movType {
+    font-size: 0.65rem;
+  }
+
+  .movMeta {
+    font-size: 0.75rem;
+  }
+}
