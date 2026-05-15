@@ -7,14 +7,12 @@ process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret-key'
 
 beforeAll(async () => {
   await prisma.stockMovement.deleteMany()
-  await prisma.productVariant.deleteMany()
   await prisma.product.deleteMany()
   await prisma.user.deleteMany()
 })
 
 afterAll(async () => {
   await prisma.stockMovement.deleteMany()
-  await prisma.productVariant.deleteMany()
   await prisma.product.deleteMany()
   await prisma.user.deleteMany()
   await prisma.$disconnect()
@@ -29,7 +27,7 @@ describe('POST /api/auth/register', () => {
     })
     expect(res.status).toBe(201)
     expect(res.body).toHaveProperty('token')
-    expect(res.body.user.role).toBe('user')
+    expect(res.body.user.role).toBe('VIEWER')
   })
 
   it('devuelve 400 si faltan campos', async () => {

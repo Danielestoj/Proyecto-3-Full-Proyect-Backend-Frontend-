@@ -1,411 +1,56 @@
-import 'dotenv/config';
-import bcrypt from 'bcryptjs';
-import { PrismaClient, Prisma } from '@prisma/client';
+import 'dotenv/config'
+import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
-const prisma = new PrismaClient();
-
-const slugify = t =>
-  t.toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-
-// 🔥 helper seguro para Decimal nullable
-const toDecimal = (v) =>
-  v !== null && v !== undefined
-    ? new Prisma.Decimal(v)
-    : null;
+const prisma = new PrismaClient()
 
 async function main() {
-  console.log('🌱 Iniciando seed...');
+  const categories = await Promise.all([
+    prisma.category.upsert({ where: { name: 'Accesorios' }, update: {}, create: { name: 'Accesorios' } }),
+    prisma.category.upsert({ where: { name: 'Pokemon' }, update: {}, create: { name: 'Pokemon' } }),
+    prisma.category.upsert({ where: { name: 'Magic' }, update: {}, create: { name: 'Magic' } }),
+    prisma.category.upsert({ where: { name: 'Riftbound' }, update: {}, create: { name: 'Riftbound' } }),
+  ])
 
-  /*
-  |--------------------------------------------------------------------------
-  | Categories
-  |--------------------------------------------------------------------------
-  */
-
-  const categoriesData = ['Accesorios', 'Pokemon', 'Magic', 'Riftbound'];
-  const categories = {};
-
-  for (const name of categoriesData) {
-    const category = await prisma.category.upsert({
-      where: { slug: slugify(name) },
-      update: {},
-      create: { name, slug: slugify(name) }
-    });
-
-    categories[name] = category;
-  }
-
-  /*
-  |--------------------------------------------------------------------------
-  | Suppliers
-  |--------------------------------------------------------------------------
-  */
-
-  const suppliersData = ['TCGFACTORY', 'DISPERSA JUGUETES', 'ASMODEE'];
-  const suppliers = {};
-
-  for (const name of suppliersData) {
-    const supplier = await prisma.supplier.upsert({
-      where: { name },
-      update: {},
-      create: { name }
-    });
-
-    suppliers[name] = supplier;
-  }
-
-  /*
-  |--------------------------------------------------------------------------
-  | Users
-  |--------------------------------------------------------------------------
-  */
-
-  const adminPassword = await bcrypt.hash('admin123', 10);
-  const managerPassword = await bcrypt.hash('manager123', 10);
-  const userPassword = await bcrypt.hash('user123', 10);
+  const adminPassword = await bcrypt.hash('admin123', 10)
+  const managerPassword = await bcrypt.hash('manager123', 10)
 
   const admin = await prisma.user.upsert({
     where: { email: 'admin@inventory.com' },
     update: {},
-    create: {
-      email: 'admin@inventory.com',
-      password: adminPassword,
-      name: 'Admin',
-      role: 'admin'
-    }
-  });
+    create: { email: 'admin@inventory.com', password: adminPassword, name: 'Admin', role: 'ADMIN' },
+  })
 
-  await prisma.user.upsert({
+  const manager = await prisma.user.upsert({
     where: { email: 'manager@inventory.com' },
     update: {},
-    create: {
-      email: 'manager@inventory.com',
-      password: managerPassword,
-      name: 'Manager',
-      role: 'manager'
-    }
-  });
-
-  const user = await prisma.user.upsert({
-    where: { email: 'user@inventory.com' },
-    update: {},
-    create: {
-      email: 'user@inventory.com',
-      password: userPassword,
-      name: 'User',
-      role: 'user'
-    }
-  });
-
-  /*
-  |--------------------------------------------------------------------------
-  | Address
-  |--------------------------------------------------------------------------
-  */
-
-  await prisma.address.create({
-    data: {
-      userId: user.id,
-      fullName: 'User Test',
-      address1: 'Calle Inventada 123',
-      city: 'Las Palmas',
-      postalCode: '35001',
-      country: 'España',
-      phone: '600123123'
-    }
-  });
-
-  /*
-  |--------------------------------------------------------------------------
-  | Products + Variants
-  |--------------------------------------------------------------------------
-  */
+    create: { email: 'manager@inventory.com', password: managerPassword, name: 'Manager', role: 'MANAGER' },
+  })
 
   const products = [
-    {
-      name: 'Archivador Portfolio Ultra Pro',
-      category: 'Accesorios',
-      supplier: 'TCGFACTORY',
-      description: 'Archivador 9 bolsillos.',
-      variants: [
-        {
-          name: 'Azul',
-          sku: 'PF-UP-AZUL',
-          language: null,
-          condition: null,
-          isFoil: false,
-          isFirstEdition: false,
-          availability: 'IN_STOCK',
-          stock: 5,
-          reservedStock: 1,
-          minStock: 2,
-          supplierReference: '074427813673',
-          supplierPrice: 15.99,
-          retailPrice: 19.99,
-          sellingPrice: 19.99,
-          compareAtPrice: 19.99,
-          salePrice: 17.99,
-          deliveryTime: 15,
-          imageUrl:
-            'https://tcgfactory.com/2414-thickbox_default/archivador-9-bolsillos-portfolio-collector-s-azul-ultra-pro.jpg'
-        }
-      ]
-    },
-
-    {
-      name: 'ETB Heroes Ascendentes',
-      category: 'Pokemon',
-      supplier: 'DISPERSA JUGUETES',
-      description: 'Elite Trainer Box.',
-      variants: [
-        {
-          name: 'Español',
-          sku: 'PKMN-ETB-HA-ESP',
-          language: 'SPANISH',
-          condition: 'MINT',
-          isFoil: false,
-          isFirstEdition: false,
-          availability: 'IN_STOCK',
-          stock: 12,
-          reservedStock: 2,
-          minStock: 5,
-          supplierReference: 'BANPC10315-SPA',
-          supplierPrice: 49.99,
-          retailPrice: 69.99,
-          sellingPrice: 69.99,
-          compareAtPrice: 69.99,
-          salePrice: 59.99,
-          deliveryTime: 20,
-          imageUrl:
-            'https://cardzone.es/cdn/shop/files/caja-de-entrenador-elite-trainer-box-etb-heroes-ascendentes-ascended-heroes-cartas-pokemon-tcg-cardzone.png?v=1771326806&width=600'
-        },
-
-        {
-          name: 'English',
-          sku: 'PKMN-ETB-HA-ENG',
-          language: 'ENGLISH',
-          condition: 'MINT',
-          isFoil: false,
-          isFirstEdition: false,
-          availability: 'BACKORDER',
-          stock: 0,
-          reservedStock: 0,
-          minStock: 0,
-          supplierReference: 'BANPC10315-EN',
-          supplierPrice: 44.99,
-          retailPrice: 64.99,
-          sellingPrice: 64.99,
-          compareAtPrice: 64.99,
-          salePrice: null,
-          deliveryTime: 25,
-          imageUrl:
-            'https://cardzone.es/cdn/shop/files/caja-de-entrenador-elite-trainer-box-etb-ascended-heroes-cartas-pokemon-tcg-cardzone.png?v=1771327393&width=600'
-        }
-      ]
-    },
-
-    {
-      name: 'Marvel Spider-Man Booster Box',
-      category: 'Magic',
-      supplier: 'TCGFACTORY',
-      description: 'Display Play Booster.',
-      variants: [
-        {
-          name: 'English',
-          sku: 'MTG-SPIDERMAN-ENG',
-          language: 'ENGLISH',
-          condition: 'MINT',
-          isFoil: false,
-          isFirstEdition: false,
-          availability: 'BACKORDER',
-          stock: 0,
-          reservedStock: 0,
-          minStock: 0,
-          supplierReference: '195166289762',
-          supplierPrice: 89.99,
-          retailPrice: 129.99,
-          sellingPrice: 129.99,
-          compareAtPrice: 129.99,
-          salePrice: null,
-          deliveryTime: 15,
-          imageUrl:
-            'https://tcgfactory.com/74923-thickbox_default/play-booster-display-30-sobres-marvel-s-spider-man-ingles-magic-the-gathering.jpg'
-        }
-      ]
-    },
-
-    {
-      name: 'Riftbound VEX Champion Deck',
-      category: 'Riftbound',
-      supplier: 'ASMODEE',
-      description: 'Champion Deck.',
-      variants: [
-        {
-          name: 'First Edition English',
-          sku: 'RIF-VEX-1ST',
-          language: 'ENGLISH',
-          condition: 'MINT',
-          isFoil: false,
-          isFirstEdition: true,
-          availability: 'PREORDER',
-          releaseDate: new Date('2026-07-15'),
-          stock: 0,
-          reservedStock: 0,
-          minStock: 0,
-          supplierReference: '810155274320',
-          supplierPrice: 12.99,
-          retailPrice: 19.99,
-          sellingPrice: 19.99,
-          compareAtPrice: 19.99,
-          salePrice: null,
-          deliveryTime: 10,
-          imageUrl:
-            'https://www.generacionx.es/Imagenes/Articulos/0810155274337.jpg'
-        }
-      ]
-    }
-  ];
+    { name:'Archivador 9 bolsillos portfolio Collectors azul Ultra Pro', sku:'PF-UP-COL-9BOL-180-AZU', description:'Archivador 9 bolsillos portfolio Collectors azul Ultra Pro. Contiene 10 hojas de calidad. Color Azul. Para 90 cartas individuales o 180 a doble cara.',
+       imageUrl:'https://tcgfactory.com/2414-thickbox_default/archivador-9-bolsillos-portfolio-collector-s-azul-ultra-pro.jpg', supplier:'TCGFACTORY', supplierReference:'074427813673', deliveryTime:15, price:15.99, retailPrice:19.99, sellingPrice:19.99, stock:2, minStock:5, categoryId:categories[0].id },
+    { name:'Fortress Card Drawers (4 cajones horizontales) Negro - Dragon Shield', sku:'DragonShield-AT-33708', description:'Fortress Card Drawers es una solución de almacenamiento segura, elegante y organizada para colecciones de TCG, ideal para mantener tus cartas protegidas y siempre accesibles en la estantería. Incorpora 4 cajones con capacidad para más de 620 cartas con funda simple, 8 cajas Dragon Shield DS100 o 25 Cube Shells cada uno. Cada cajón incluye un separador de espuma para fijar y organizar mejor la colección, con posibilidad de añadir separadores adicionales. Fabricado en cartón rígido con superficie resistente a arañazos y un diseño de colores discretos que se integra fácilmente en cualquier estantería. Medidas: 335 × 109 × 390 mm; interior por cajón: 71 × 96 × 380 mm.', imageUrl:'https://tcgfactory.com/2414-thickbox_default/fortress-card-drawers-4-cajones-horizontales-negro-dragon-shield.jpg', supplier:'TCGFACTORY', supplierReference:'5706569337087', deliveryTime:15, price:19.99, retailPrice:29.99, sellingPrice:39.99, stock:5, minStock:2, categoryId:categories[0].id },
+    { name:'ETB Caja de Entrenador Elite Heroes Ascendentes - Español', sku:'PKMN-CEE-HA-ESP', description:'Pokemon TCG en español contiene: 9 sobres de mejora de Heroes Ascendentes de JCC Pokémon TCG. 1 carta promocional de Zekrom de N. 65 fundas para cartas con diseño de Mega Dragonite. 40 cartas de Energía de JCC Pokémon. 1 guía para jugadores de la expansión Heroes Ascendentes : Ascended Heroes. Dados y marcadores de condición. 1 caja de coleccionista para guardarlo todo con 4 divisores para mantenerlo todo organizado. 1 carta con código para usar en JCC Pokémon Online o en JCC Pokémon Live', imageUrl:'https://cardzone.es/cdn/shop/files/caja-de-entrenador-elite-trainer-box-etb-heroes-ascendentes-ascended-heroes-cartas-pokemon-tcg-cardzone.png?v=1771326806&width=600', supplier:'DISPERSA JUGUETES', supplierReference:'BANPC10315', deliveryTime:20, price:49.99, retailPrice:69.99, sellingPrice:69.99, stock:12, minStock:5, categoryId:categories[1].id },
+    { name:'Booster Display (30 Sobres) Marvels Spider-Man Inglés', sku:'MagictheGathering-D45240001', description:'Play Boosters (30 sobres) Marvels Spider-Man (inglés) – Magic: The Gathering. Caja con 30 sobres Play-Booster. Cada sobre contiene 14 cartas y 1 ficha, con combinaciones variables de rareza: entre 1 y 4 cartas raras o superiores, 3 a 5 infrecuentes, 6 a 9 comunes y 1 tierra. Incluye 1 carta foil tradicional garantizada por sobre. En el 20 % de los sobres, la tierra también será foil. Distribución ideal para tiendas enfocadas en juego sellado y draft entre jugadores.', imageUrl:'https://tcgfactory.com/74923-thickbox_default/play-booster-display-30-sobres-marvel-s-spider-man-ingles-magic-the-gathering.jpg', supplier:'TGCFACTORY', supplierReference:'195166289762', deliveryTime:15, price:89.99, retailPrice:129.99, sellingPrice:129.99, stock:2, minStock:0, categoryId:categories[2].id },
+    { name:'Unleashed Champion Deck - VEX', sku:'RIF-UNL-MZ-VEX', description:'RIFTBOUND UNLEASHED! VEX CHAMPION DECK. This is going to be... awful, in a very good way! Vex drags her foes down into despairing depths with this Champion Deck. This preconstructed 56-card deck is built to thwart your opponent at every turn, forcing them to make difficult decision after decision. Whether you´re a new player ready to jump in or a seasoned schemer looking for a fresh deck, Vex is ready to make your opponent miserable straight out of the box. Includes 1 Riftbound: Unleashed booster! Ready to Play – A full 56-card preconstructed deck featuring Vex, designed for accessible and dynamic gameplay +1 Unleashed booster awful, in a very good way! – This deck loves to play slow and steady, letting you incrementally pick apart your foes while you hold battlefields. Extras to Keep You in the Action – Comes with a full-size paper playmat, a booster pack for customization, and deck-building tips.Booklet Included – Learn the game with an easy-to-follow rules and deck-building guide. Custom Paper Deckbox – A durable, foldable deckbox that ships flat and assembles quickly, keeping your cards safe and portable.', imageUrl:'https://www.generacionx.es/Imagenes/Articulos/0810155274337.jpg', supplier:'ASMODEE', supplierReference:'810155274320', deliveryTime:10, price:12.99, retailPrice:19.99, sellingPrice:19.99, stock:6, minStock:6, categoryId:categories[3].id },
+  ]
 
   for (const p of products) {
-    const product = await prisma.product.create({
-      data: {
-        name: p.name,
-        slug: slugify(p.name),
-        description: p.description,
-        categoryId: categories[p.category].id,
-        supplierId: suppliers[p.supplier].id
-      }
-    });
-
-    for (const v of p.variants) {
-      const variant = await prisma.productVariant.create({
-        data: {
-          productId: product.id,
-          name: v.name,
-          sku: v.sku,
-          language: v.language,
-          condition: v.condition,
-          isFoil: v.isFoil,
-          isFirstEdition: v.isFirstEdition,
-          availability: v.availability,
-          releaseDate: v.releaseDate,
-          stock: v.stock,
-          reservedStock: v.reservedStock,
-          minStock: v.minStock,
-          supplierReference: v.supplierReference,
-
-          supplierPrice: toDecimal(v.supplierPrice),
-          retailPrice: toDecimal(v.retailPrice),
-          sellingPrice: toDecimal(v.sellingPrice),
-          compareAtPrice: toDecimal(v.compareAtPrice),
-          salePrice: toDecimal(v.salePrice),
-
-          deliveryTime: v.deliveryTime
-        }
-      });
-
-      await prisma.productImage.create({
-        data: {
-          productVariantId: variant.id,
-          url: v.imageUrl,
-          position: 0
-        }
-      });
-
-      await prisma.productPriceHistory.create({
-        data: {
-          productVariantId: variant.id,
-          oldPrice: new Prisma.Decimal(v.retailPrice),
-          newPrice: new Prisma.Decimal(v.sellingPrice)
-        }
-      });
-
-      if (v.stock > 0) {
-        await prisma.stockMovement.create({
-          data: {
-            productVariantId: variant.id,
-            userId: admin.id,
-            type: 'IN',
-            quantity: v.stock,
-            reason: 'Stock inicial'
-          }
-        });
-      }
-    }
-  }
-
-  /*
-  |--------------------------------------------------------------------------
-  | Cart + Order
-  |--------------------------------------------------------------------------
-  */
-
-  const cart = await prisma.cart.create({
-    data: {
-      userId: user.id,
-      expiresAt: new Date(Date.now() + 1000 * 60 * 15)
-    }
-  });
-
-  const pokemonVariant = await prisma.productVariant.findUnique({
-    where: {
-      sku: 'PKMN-ETB-HA-ESP'
-    }
-  });
-
-  if (pokemonVariant) {
-    await prisma.cartItem.create({
-      data: {
-        cartId: cart.id,
-        productVariantId: pokemonVariant.id,
-        quantity: 1
-      }
-    });
+    const product = await prisma.product.upsert({
+      where: { sku: p.sku },
+      update: {},
+      create: p,
+    })
 
     await prisma.stockMovement.create({
-      data: {
-        productVariantId: pokemonVariant.id,
-        userId: user.id,
-        type: 'RESERVED',
-        quantity: 1,
-        reason: 'Producto reservado en carrito'
-      }
-    });
-
-    const order = await prisma.order.create({
-      data: {
-        userId: user.id,
-        status: 'PAID',
-        total: new Prisma.Decimal(69.99)
-      }
-    });
-
-    await prisma.orderItem.create({
-      data: {
-        orderId: order.id,
-        productVariantId: pokemonVariant.id,
-        quantity: 1,
-        productName: 'ETB Heroes Ascendentes',
-        variantName: 'Español',
-        productSku: pokemonVariant.sku,
-        unitPrice: new Prisma.Decimal(69.99),
-        totalPrice: new Prisma.Decimal(69.99)
-      }
-    });
+      data: { productId: product.id, type: 'IN', quantity: p.stock, reason: 'Stock inicial', userId: admin.id },
+    })
   }
 
-  console.log('✅ Seed completado');
-  console.log('👤 Admin: admin@inventory.com / admin123');
-  console.log('👤 Manager: manager@inventory.com / manager123');
-  console.log('👤 User: user@inventory.com / user123');
+  console.log('✅ Seed completado')
+  console.log('👤 Admin:   admin@inventory.com / admin123')
+  console.log('👤 Manager: manager@inventory.com / manager123')
 }
 
-main()
-  .catch(console.error)
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch(console.error).finally(() => prisma.$disconnect())
