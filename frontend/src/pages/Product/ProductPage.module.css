@@ -1,0 +1,229 @@
+.container{
+  display:flex;
+  flex-direction: column;
+  gap:20px;
+  padding:40px;
+  max-width:1400px;
+  margin:auto;
+}
+
+.productInfo {
+    display: flex;
+    flex-direction: row;
+}
+
+.imageSection{
+  flex:1;
+}
+
+.imageSection img{
+  width:100%;
+  max-width:500px;
+  object-fit:contain;
+}
+
+.infoSection{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.category{
+  color:#777;
+  font-size:14px;
+}
+
+.variant{
+  color:#666;
+}
+
+.description{
+  line-height:1.6;
+}
+
+.priceBox{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.oldPrice{
+  text-decoration:line-through;
+  color:#888;
+  font-size:20px;
+}
+
+.price{
+  font-size:42px;
+  font-weight:700;
+  color:white;
+}
+
+.cartButton{
+  width: 100%;
+  padding: 0.7rem 1rem;
+  margin-top: 0.8rem;
+
+  background: linear-gradient(135deg, #6a5af9, #b44cff);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: 0.25s ease;
+  box-shadow: 0 4px 12px rgba(180, 76, 255, 0.3);
+}
+
+.cartButton:hover{
+  background:#003fcc;
+}
+
+.backButton{
+  
+  border:none;
+  font-size:16px;
+  cursor:pointer;
+  margin-bottom:30px;
+  background: linear-gradient(135deg, #6a5af9, #b44cff);
+  color: white;
+  width: 200px;
+  height: 30px;
+  transition:.2s;
+}
+
+.backButton:hover{
+  color:#0055ff;
+}
+
+.salePrice {
+  color: #ff4d4d;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+
+  .container {
+    padding: 30px;
+  }
+
+  .productInfo {
+    gap: 20px;
+  }
+
+  .imageSection img {
+    max-width: 420px;
+  }
+
+  .price {
+    font-size: 36px;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  .container {
+    padding: 25px;
+  }
+
+  /* Pasa a una sola columna */
+  .productInfo {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .imageSection img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .infoSection {
+    gap: 15px;
+  }
+
+  .price {
+    font-size: 32px;
+  }
+
+  .oldPrice {
+    font-size: 18px;
+  }
+
+  .backButton {
+    width: 100%;
+    height: auto;
+    padding: 0.6rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+
+  .container {
+    padding: 15px;
+  }
+
+  .title {
+    text-align: center;
+  }
+
+  /* Imagen centrada y más pequeña */
+  .imageSection img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Info más compacta */
+  .infoSection {
+    gap: 12px;
+  }
+
+  .price {
+    font-size: 28px;
+  }
+
+  .oldPrice {
+    font-size: 16px;
+  }
+
+  .salePrice {
+    font-size: 20px;
+  }
+
+  /* Botón de volver */
+  .backButton {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 15px;
+  }
+
+  /* Botón de carrito full width */
+  .cartButton {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  /* Caja de precios en columna */
+  .priceBox {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

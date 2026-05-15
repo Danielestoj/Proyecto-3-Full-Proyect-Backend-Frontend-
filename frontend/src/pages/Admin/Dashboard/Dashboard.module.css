@@ -1,0 +1,182 @@
+.main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+.main h1 { font-size: 1.7rem; color: white; margin-bottom: 2rem; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.stat.warning { border-left: 4px solid #f59e0b; }
+
+.statValue { font-size: 2rem; font-weight: 700; color: #1b4332; }
+.statLabel { font-size: 0.85rem; color: #666; }
+
+.section { margin-bottom: 2.5rem; }
+.section h2 { font-size: 1.15rem; color: white; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
+
+.list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+
+.item {
+  background: white;
+  padding: 0.9rem 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.item.alert { border-left: 3px solid #f59e0b; }
+.item > div { display: flex; align-items: center; gap: 0.75rem; }
+
+.productName { font-weight: 600; color: #1b4332; text-decoration: none; }
+.productName:hover { text-decoration: underline; }
+.sku { font-size: 0.78rem; color: #999; font-family: monospace; }
+.stockBadge { font-size: 0.88rem; font-weight: 600; color: #f59e0b; }
+
+.movType {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.in { background: #d1fae5; color: #065f46; }
+.out { background: #fee2e2; color: #991b1b; }
+
+.movMeta { font-size: 0.85rem; color: #888; }
+
+.center { text-align: center; margin-top: 5rem; color: #666; }
+
+
+
+/* ===========================
+   📌 1024px — Tablets grandes
+   =========================== */
+@media (max-width: 1024px) {
+  .main {
+    max-width: 90%;
+  }
+
+  .statValue {
+    font-size: 1.7rem;
+  }
+
+  .item {
+    padding: 0.8rem 1rem;
+  }
+
+  .movMeta {
+    font-size: 0.8rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 780px — Tablets verticales
+   =========================== */
+@media (max-width: 780px) {
+
+  .main h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat {
+    padding: 1.2rem;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+
+  .item > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .movMeta {
+    font-size: 0.78rem;
+  }
+}
+
+
+
+/* ===========================
+   📌 500px — Móviles
+   =========================== */
+@media (max-width: 500px) {
+  .main {
+    padding: 0 0.5rem;
+  }
+
+  .main h1 {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat {
+    padding: 1rem;
+  }
+
+  .statValue {
+    font-size: 1.3rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .item {
+    padding: 0.8rem;
+  }
+
+  .productName {
+    font-size: 0.95rem;
+  }
+
+  .sku {
+    font-size: 0.7rem;
+  }
+
+  .stockBadge {
+    font-size: 0.8rem;
+  }
+
+  .movType {
+    font-size: 0.65rem;
+  }
+
+  .movMeta {
+    font-size: 0.75rem;
+  }
+}
