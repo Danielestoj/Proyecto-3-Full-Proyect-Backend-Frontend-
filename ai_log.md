@@ -83,3 +83,18 @@
     Diferencia real entre “campo opcional en UI” vs “campo requerido en backend”.
     Cómo diseñar formularios complejos con estructuras anidadas (Product → Variants).
     Mejora de UX en sistemas CRUD (categorías dinámicas, confirmaciones de borrado, filtros avanzados).
+
+
+## 2026-05-15 - Resolución de problemas con Vercel y Railway, y redacción de documentación.
+**Herramienta**: Copilot.
+**Contexto**: Tuve bastantes problemas con la configuración de Vercel y Railway a la hora de migrar la base de datos.
+**Problemas principales del día:**
+    Error 404 al cargar los datos
+    Prisma migrado pero la base de datos está vacía
+    Error al poner el link de DATABASE_URL
+
+**Qué se obtuvo:**
+    El fallo principal fue que en Railway hay que crear tanto el backend como el apartado de PostgreSQL. Desde Visual Studio Code conecté con la base de datos y migré prisma así como inicié el Seed para que contuviera datos.
+
+**Tiempo con IA:** ~4h | **Tiempo sin IA (estimado)**: ~6h
+
